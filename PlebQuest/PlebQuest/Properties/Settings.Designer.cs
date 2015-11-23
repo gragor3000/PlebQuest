@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Tp2.Properties
+namespace PlebQuest.Properties
 {
 
 
