@@ -1,0 +1,9 @@
+E:\Ecole\5eme Session\Base de données II\TP #2\Tp2\Tp2\bin\Debug\Tp2.exe.config
+E:\Ecole\5eme Session\Base de données II\TP #2\Tp2\Tp2\bin\Debug\Tp2.exe
+E:\Ecole\5eme Session\Base de données II\TP #2\Tp2\Tp2\bin\Debug\Tp2.pdb
+E:\Ecole\5eme Session\Base de données II\TP #2\Tp2\Tp2\obj\Debug\Tp2.csprojResolveAssemblyReference.cache
+E:\Ecole\5eme Session\Base de données II\TP #2\Tp2\Tp2\obj\Debug\Tp2.Form1.resources
+E:\Ecole\5eme Session\Base de données II\TP #2\Tp2\Tp2\obj\Debug\Tp2.Properties.Resources.resources
+E:\Ecole\5eme Session\Base de données II\TP #2\Tp2\Tp2\obj\Debug\Tp2.csproj.GenerateResource.Cache
+E:\Ecole\5eme Session\Base de données II\TP #2\Tp2\Tp2\obj\Debug\Tp2.exe
+E:\Ecole\5eme Session\Base de données II\TP #2\Tp2\Tp2\obj\Debug\Tp2.pdb
