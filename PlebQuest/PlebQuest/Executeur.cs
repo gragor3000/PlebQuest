@@ -115,7 +115,7 @@ public class CExecuteur
         return tbStructure;
     }
 
-    public DataTable ObtenirStructure(string nom, GenreChaine genre)
+    public DataTable ObtenirStructure(string nom, Genre genre)
     {
         string inst;
         inst = Convert.ToString((genre == Genre.NomTable ? "SELECT * FROM " + nom : "exec " + nom));
@@ -137,589 +137,211 @@ public class CExecuteur
             conSql.Open();
 
             reader = cmd.ExecuteReader();
-        }
-    }
 
-
-
-}
-
-/*
-public class CExecuteur
-{
-    //Chaine de connexion par défaut, modifiée selon le TP
-
-    private const string CHAINE_DEFAUT = "Server=J-C236-OL-11;Database=PQSGJPL;User Id=BD2SGJPL;Password=PQ123;";
-    // Connexion utilisée
-
-    private SqlConnection m_conSQL;
-    // Données de commandes, disponibles par accesseurs
-    private SqlCommand m_cmdSQL;
-
-    private SqlDataReader m_lecteur;
-    public enum GenreChaine
-    {
-        NomTable,
-        NomPS
-    }
-
-    // Constructeurs
-    // Constructeur par défaut (Avec la chaîne de connexion par défaut)
-    public CExecuteur() : base()
-    {
-
-        m_conSQL = new SqlConnection();
-        m_conSQL.ConnectionString = CHAINE_DEFAUT;
-
-    }
-
-
-    #region "Les méthodes"
-
-
-    #region "Modifications de la bd"
-
-
-
-    // modification de la bd à l'intérieur de la chaine
-    // de connexion présentement active.
-    public void ChangerBD(string nomBD)
-    {
-        // on veut changer, dans la chaine de connexion, le nom
-        // de la bd à utiliser.
-
-        // ici on ne peut pas utiliser SqlConnection.ChangeDatabase
-        // qui exige que la connexion soit présentement ouverte.
-        // m_conSQL.ChangeDatabase(nomBD)
-
-        m_conSQL.ConnectionString = m_conSQL.ConnectionString.Replace(m_conSQL.Database, nomBD);
-
-    }
-
-    //----------------------------------------------------------
-
-    // modification du serveur à l'intérieur de la chaine
-    // de connexion présentement active.
-    // Remarque: tel qu'écrit il ne faudrait pas que la chaine de
-    //           connexion ne contienne plus d'une fois le nom de
-    //           serveur car cela causerait des problèmes....
-
-    public void ChangerServeur(string nomServeur)
-    {
-        // on veut changer, dans la chaine de connexion, le nom
-        // de la bd à utiliser.
-
-        m_conSQL.ConnectionString = m_conSQL.ConnectionString.Replace(m_conSQL.DataSource, nomServeur);
-
-    }
-
-    //----------------------------------------------------------
-
-    #endregion
-
-
-    #region "Validation de la connexion"
-
-    // Déterminer si la connexion est valide. Pour le savoir
-    // il faut tenter une ouverture.
-    public bool ConnexionValide()
-    {
-
-        bool retour = true;
-
-        try
-        {
-            this.m_conSQL.Open();
-            this.m_conSQL.Close();
-
-        }
-        catch (Exception ex)
-        {
-            retour = false;
-        }
-
-        return retour;
-
-    }
-    #endregion
-
-    //----------------------------------------------------------
-
-    #region "Sur les structures de tables, vues ou ps"
-
-
-    // obtention de la structure d'une instruction
-    // SANS récupération des exceptions
-    public DataTable ObtenirStruct(string inst, string NomTable)
-    {
-
-        SqlCommand cmdSQL = new SqlCommand(inst, m_conSQL);
-        cmdSQL.CommandType = CommandType.Text;
-
-        this.m_conSQL.Open();
-
-        SqlDataReader lecteur = cmdSQL.ExecuteReader(CommandBehavior.SchemaOnly);
-
-        DataTable tbStructure = lecteur.GetSchemaTable();
-        tbStructure.TableName = NomTable;
-
-        lecteur.Close();
-        this.m_conSQL.Close();
-
-        return tbStructure;
-
-    }
-
-    //----------------------------------------------------------
-
-    #endregion
-
-
-    #region "Surcharges de ObtenirStructure"
-
-    // obtention d'une table (DataTable) contenant la structure 
-    // d'une instruction SQL, du format SELECT * FROM Table/Vue,
-    // ou encore EXECUTE psQuelconque
-
-    public DataTable ObtenirStructure(string inst)
-    {
-
-        SqlCommand cmdSQL = new SqlCommand(inst, m_conSQL);
-        cmdSQL.CommandType = CommandType.Text;
-
-        // il faut s'assurer de faire certaines déclarations à l'exté-
-        // rieur d'une instruction Try..Catch...
-
-        SqlDataReader lecteur = default(SqlDataReader);
-
-        DataTable tbStructure = default(DataTable);
-
-
-        try
-        {
-            this.m_conSQL.Open();
-
-            // exécution de la commande
-            lecteur = cmdSQL.ExecuteReader(CommandBehavior.SchemaOnly);
-
-            // récupération de son schéma
-            tbStructure = lecteur.GetSchemaTable();
-
-            // REMARQUE : dans le cas présent, le nom "SchemaTable" sera donné
-            //            par défaut à la table.
-
-            lecteur.Close();
-
-
-        }
-        catch (Exception e)
-        {
-            tbStructure = null;
-            //MessageBox.Show("erreur " & e.Message)
-        }
-        finally
-        {
-            // si une erreur survient sur le .ExecuteReader la connexion
-            // n'est pas nécessairememnt fermée. Si elle l'est cela 
-            // ne cause pas de problèmes.
-            this.m_conSQL.Close();
-
-        }
-
-        return tbStructure;
-
-    }
-
-
-    //----------------------------------------------------------
-
-    // obtention d'une table (DataTable) contenant la structure 
-    // d'une instruction SQL, sous les mêmes formats que la surcharge précédente,
-    // en lui affectant comme nom (de table) celui reçu en paramètre
-
-    public DataTable ObtenirStructure(string inst, string NomTable)
-    {
-
-
-        DataTable tbStructure = default(DataTable);
-
-        tbStructure = this.ObtenirStructure(inst);
-
-        if ((tbStructure != null))
-        {
-            tbStructure.TableName = NomTable;
-        }
-
-        return tbStructure;
-
-    }
-
-    //----------------------------------------------------------
-
-    // Une surcharge de la fonction précédente...
-    // Ici, le paramètre "Nom" est soit le nom d'une table ou vue,
-    // soit le nom d'une procédure stockée.
-
-    public DataTable ObtenirStructure(string Nom, GenreChaine genre)
-    {
-
-        string instSQL = null;
-        instSQL = Convert.ToString((genre == GenreChaine.NomTable ? "SELECT * FROM " + Nom : "exec " + Nom));
-
-
-        // ré-utilisons notre autre version....
-        DataTable tbStructure = default(DataTable);
-
-        tbStructure = this.ObtenirStructure(instSQL, Nom);
-
-        return tbStructure;
-
-    }
-
-    //----------------------------------------------------------
-
-    #endregion
-
-    public int ExtraireLignes(string instSQL, DataTable TableCible)
-    {
-
-        // pour l'instruction SQL fournie, on extrait les lignes
-        // de données, en générant les lignes correspondantes dans
-        // la table reçue en paramètre.
-        // Il est entendu que la structure de la table est connue, c'est-à-
-        // dire que sa collection Columns existe et est conforme à l'instruction
-        // SQL fournie.
-
-        // et la fonction retourne le nombre de lignes lues
-
-        SqlCommand LaCmd = new SqlCommand(instSQL, m_conSQL);
-        LaCmd.CommandType = CommandType.Text;
-
-        int Compteur = 0;
-
-
-        try
-        {
-
-            m_conSQL.Open();
-
-            SqlDataReader lecteur = LaCmd.ExecuteReader();
-
-
-            // placer les données dans la liste
-            while (lecteur.Read())
+            while (reader.Read())
             {
-                Compteur += 1;
-                object[] valeurs = new object[lecteur.FieldCount];
-                lecteur.GetValues(valeurs);
-                TableCible.Rows.Add(valeurs);
+                i++;
+                object[] values = new object[reader.FieldCount];
+                reader.GetValues(values);
+                tableCible.Rows.Add(values);
             }
 
-            lecteur.Close();
-
+            reader.Close();
         }
-        catch (Exception ex)
+        catch(Exception ex)
         {
-            TableCible = null;
-
+            tableCible = null;
         }
         finally
         {
-            m_conSQL.Close();
-
+            conSql.Close();
         }
 
-        return Compteur;
-
+        return i;
     }
 
-    //----------------------------------------------------------
-
-
-    public DataTable ExtraireLignes(string instSQL)
+    /*
+    public DataTable ExtraireLigne(string inst)
     {
-        // pour l'instruction SQL fournie, on extrait les lignes
-        // de données, en générant une table les contenant
+        DataTable tabResult = new DataTable();
 
-        // et la fonction retourne cette table
+        DataTable tabStruct = ObtenirStruct(inst, "tempo");
 
-        DataTable tabRetour = default(DataTable);
-        tabRetour = new DataTable();
-
-        // la structure de la table à retourner dépendra du contenu
-        // de l'instruction ( SQL ) reçue.
-
-        DataTable tabStructure = this.ObtenirStruct(instSQL, "tempo");
-
-        // transférons la structure dans la table à produire ici
-        for (int indice = 0; indice <= tabStructure.Rows.Count - 1; indice++)
+        for (int i = 0; i < tabStruct.Rows.Count; i++)
         {
-            DataColumn UneColonne = default(DataColumn);
-            UneColonne = new DataColumn(Convert.ToString(tabStructure.Rows[indice].Item("ColumnName")), (System.Type)tabStructure.Rows[indice].Item("DataType"));
-            tabRetour.Columns.Add(UneColonne);
+            DataColumn col = new DataColumn(Convert.ToString(tabStruct.Rows[i]["ColumnName"], Convert.ToString(tabStruct.Rows[i]["DataType"]), System.Type));
+            //UneColonne = new DataColumn(Convert.ToString(tabStructure.Rows[indice].Item("ColumnName")), (System.Type)tabStructure.Rows[indice].Item("DataType"));
+
+            tabResult.Columns.Add(col);
         }
 
-        this.ExtraireLignes(instSQL, tabRetour);
+        ExtraireLigne(inst, tabResult);
+        return tabResult;
+    }*/
 
-        return tabRetour;
+    public DataTable ExtraireTable(string inst, DataTable tabstruct)
+    {
+        DataTable tabTemp = TransposerCol(tabstruct);
+        ExtraireLigne(inst, tabTemp);
+        return tabTemp;
 
     }
 
-
-    //----------------------------------------------------------
-
-    public DataTable ExtraireTable(string instSQL, DataTable tbStructure)
+    public DataTable ExtraireTable(string name, Genre genre, DataTable tabstruct)
     {
+        string inst = Convert.ToString((genre == Genre.NomTable ? "SELECT * FROM " + name : "EXECUTE " + name));
 
-        // La fonction reçoit une table contenant la structure de ce qui sera
-        // la table à retourner, dans laquelle se trouveront les données.
-        DataTable tabTempo = default(DataTable);
-
-        tabTempo = this.TransposerColonnes(tbStructure);
-
-        this.ExtraireLignes(instSQL, tabTempo);
-
-        return tabTempo;
+        return ExtraireTable(inst, tabstruct);
     }
 
-    public DataTable ExtraireTable(string Nom, GenreChaine genre, DataTable tbStructure)
+    public DataTable TransposerCol(DataTable tabSource)
     {
+        DataTable tabResult = new DataTable();
 
-        string instruction = null;
-
-        instruction = Convert.ToString((genre == GenreChaine.NomTable ? "SELECT * FROM " + Nom : "EXECUTE " + Nom));
-
-        return this.ExtraireTable(instruction, tbStructure);
-
-    }
-
-
-    //----------------------------------------------------------
-
-    public DataTable TransposerColonnes(DataTable tbSource)
-    {
-
-        // la table source (tbSource) contient le schéma d'une instruction SQL
-        // la fonction retourne une référence sur une table dont
-        // les colonnes seront identifiées à partir de valeurs dans les
-        // lignes de la table source.
-
-        //DataRow ligne = default(DataRow);
-
-        DataTable NouvelleTable = new DataTable();
-
-        foreach (DataRow ligne in tbSource.Rows)
+        foreach (DataRow line in tabSource.Rows)
         {
-            // de chaque ligne de tbSource, on extrait seulement  "champs"
-            // qui sont suffisant pour définir une DataColumn
+            DataColumn col = new DataColumn();
 
-            DataColumn UneColonne = new DataColumn();
+            col.ColumnName = Convert.ToString(line["ColomnName"]);
+            col.DataType = line["DataType"].GetType();
 
-            UneColonne.ColumnName = Convert.ToString(ligne["ColumnName"]);
-            UneColonne.DataType = ligne["DataType"].GetType();
-
-            NouvelleTable.Columns.Add(UneColonne);
-
+            tabResult.Columns.Add(col);
         }
 
-        return NouvelleTable;
-
+        return tabResult;
     }
 
-
-    //----------------------------------------------------------
-
-    public int ExecProcParams(string instSQL, string Code)
+    public int ExecProcParams(string inst, string code)
     {
-        // pour l'exécution d'une procédure stokée avec paramètres
-        // mais qui ne retourne qu'une valeur
-        SqlCommand cmdSQL = new SqlCommand(instSQL, this.m_conSQL);
-        cmdSQL.CommandType = CommandType.StoredProcedure;
+        cmdSql = new SqlCommand(inst, conSql);
+        cmdSql.CommandType = CommandType.StoredProcedure;
 
-        cmdSQL.Parameters.AddWithValue("@Code", Code);
+        cmdSql.Parameters.AddWithValue("@code", code);
 
-        this.m_conSQL.Open();
-
-        // on ne peut pas déclarer nombre à l'intérieur du TRY ici
-        int nombre = 0;
+        int i = 0;
         try
         {
-            nombre = cmdSQL.ExecuteNonQuery();
+            i = cmdSql.ExecuteNonQuery();
         }
-        catch (Exception ex)
+        catch(Exception ex)
         {
-            MessageBox.Show(ex.Message);
-
+            MessageBox.Show("ExecProcParams error: " + ex.Message);
         }
         finally
         {
-            this.m_conSQL.Close();
+            conSql.Close();
         }
 
-        return nombre;
-
-
+        return i;
     }
 
-
-    //----------------------------------------------------------
-
-    public bool ExecPsParams(string NomPs, DataTable TableCible, params object[] paramètres)
+    public bool ExecPsParams(string namePs, DataTable tabTarget, params object[] param)
     {
+        string[] nameParam = DonnerNomsParams(namePs);
+        bool result = false;
 
-        // pour l'exécution d'une procédure stockée avec paramètres
-        // qui retourne un ensemble de résultats et qui seront stockés dans 
-        // la DataTable de reour ici.
-        // Le nom de la procédure stockée, ainsi que les valeurs à accorder aux
-        // paramètres de celle-ci sont fournis à la méthode.
-        // L'autre paramètre ici est la DataTable (TableCible) qui connaît la structure
-        // des résultats que la ps devrait donner.
-        // TOUS LES PARAMÈTRES SONT DES PARAMÈTRES D'IMPORTATION.
-
-        // Dans un premier temps, on interroge le serveur pour obtenir les noms "réels"
-        // des paramètres d'importation qu'attend la ps.
-
-        string[] NomsParams = null;
-        int Indice = 0;
-        bool retour = false;
-
-        NomsParams = this.DonnerNomsParams(NomPs);
-
-        if ((NomsParams != null))
+        if(nameParam != null)
         {
-            SqlCommand cmdSQL = new SqlCommand(NomPs, this.m_conSQL);
-            cmdSQL.CommandType = CommandType.StoredProcedure;
+            cmdSql = new SqlCommand(namePs, conSql);
+            cmdSql.CommandType = CommandType.StoredProcedure;
 
-            // on associe les valeurs des paramètres avec les paramètres en question
-            for (Indice = 0; Indice <= NomsParams.Length - 1; Indice++)
+            for (int i = 0; i < nameParam.Length; i++)
             {
-                cmdSQL.Parameters.AddWithValue(NomsParams[Indice], paramètres[Indice]);
+                cmdSql.Parameters.AddWithValue(nameParam[i], param[i]);
             }
 
             try
             {
-                this.m_conSQL.Open();
-                // 
-                SqlDataReader lecteur = cmdSQL.ExecuteReader();
-                // placer les données dans la table
-                while (lecteur.Read())
+                conSql.Open();
+
+                reader = cmdSql.ExecuteReader();
+
+                while(reader.Read())
                 {
-                    object[] valeurs = new object[lecteur.FieldCount];
-                    lecteur.GetValues(valeurs);
-                    TableCible.Rows.Add(valeurs);
+                    object[] values = new object[reader.FieldCount];
+                    reader.GetValues(values);
+                    tabTarget.Rows.Add(values);
                 }
 
-                lecteur.Close();
-                retour = true;
-
+                reader.Close();
+                result = true;
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
-                MessageBox.Show("Dans ExecPsParams : " + ex.Message);
-                retour = false;
+                MessageBox.Show("error ExecPsParams: " + ex.Message);
+                result = false;
             }
             finally
             {
-                this.m_conSQL.Close();
+                conSql.Close();
             }
         }
-
-        return retour;
-
-
+        return result;
     }
 
-    //----------------------------------------------------------
-
-    public string ExecProcAction(string instSQL, int Code, int Achat)
+    public string ExecProcAction(string inst, int code, int achat)
     {
-        // pour l'exécution d'une procédure stokée avec paramètres
-        // mais qui ne retourne qu'une valeur
-        SqlCommand cmdSQL = new SqlCommand(instSQL, this.m_conSQL);
-        cmdSQL.CommandType = CommandType.StoredProcedure;
+        cmdSql = new SqlCommand(inst, conSql);
+        cmdSql.CommandType = CommandType.StoredProcedure;
 
-        //Entrer les paramètres
-        cmdSQL.Parameters.Add("@message", SqlDbType.NVarChar, 500);
-        cmdSQL.Parameters.AddWithValue("@idperso", Code);
-        cmdSQL.Parameters.AddWithValue("@achat", Achat);
-        cmdSQL.Parameters["@message"].Direction = ParameterDirection.Output;
-        this.m_conSQL.Open();
+        cmdSql.Parameters.Add("@message", SqlDbType.NVarChar, 500);
+        cmdSql.Parameters.AddWithValue("@idperso", code);
+        cmdSql.Parameters.AddWithValue("achat", achat);
+        cmdSql.Parameters["@message"].Direction = ParameterDirection.Output;
+        conSql.Open();
 
-        string msgRetour = null;
-        msgRetour = "";
+        string result = "";
+
         try
         {
-            cmdSQL.ExecuteNonQuery();
+            cmdSql.ExecuteNonQuery();
 
-            msgRetour = cmdSQL.Parameters["@message"].Value.ToString();
+            result = cmdSql.Parameters["@message"].Value.ToString();
         }
-        catch (Exception ex)
+        catch(Exception ex)
         {
-            MessageBox.Show(ex.Message);
-
+            MessageBox.Show("ExecProcAction: " + ex.Message);
         }
         finally
         {
-            this.m_conSQL.Close();
+            conSql.Close();
         }
 
-        return msgRetour;
-
-
+        return result;
     }
-    #endregion
 
-    #region "Pour ExecuteNonQuery"
-
-
-
-    public string[] DonnerNomsParams(string NomPs)
+    public string[] DonnerNomsParams(string namePs)
     {
-
-        string[] NomsParams = {
-
-        };
-
-        int indice = 0;
-
-        string instTSQL = null;
-
-        instTSQL = "SELECT PARAMETER_NAME, DATA_TYPE, ORDINAL_POSITION " + "FROM INFORMATION_SCHEMA.PARAMETERS WHERE SPECIFIC_NAME ='" + NomPs + "'";
-
-        SqlCommand LaCmd = new SqlCommand(instTSQL, this.m_conSQL);
-        LaCmd.CommandType = CommandType.Text;
+        string[] nameParams = { };
+        int i = 0;
+        string inst = "SELECT PARAMETER_NAME, DATA_TYPE, ORDINAL_POSITION " + "FROM INFORMATION_SCHEMA.PARAMETERS WHERE SPECIFIC_NAME ='" + namePs + "'";
+        SqlCommand cmd = new SqlCommand(inst, conSql);
+        cmd.CommandType = CommandType.Text;
 
         try
         {
-            this.m_conSQL.Open();
+            conSql.Open();
+            reader = cmd.ExecuteReader();
 
-            SqlDataReader lecteur = LaCmd.ExecuteReader();
-
-            while (lecteur.Read())
+            while(reader.Read())
             {
-                Array.Resize(ref NomsParams, indice + 1);
-                NomsParams[indice] = Convert.ToString(lecteur.GetValue(0));
-                indice += 1;
+                Array.Resize(ref nameParams, i + 1);
+                nameParams[i] = Convert.ToString(reader.GetValue(0));
+                i += 1;
             }
 
-            lecteur.Close();
-
+            reader.Close();
         }
-        catch (Exception ex)
+        catch(Exception ex)
         {
-            MessageBox.Show("erreur SQL-Server : " + ex.Message);
-            NomsParams = null;
-
+            MessageBox.Show("error DonnerNomsParams: " + ex.Message);
+            nameParams = null;
         }
         finally
         {
-            this.m_conSQL.Close();
+            conSql.Close();
         }
 
-        return NomsParams;
-
+        return nameParams;
     }
-    #endregion
-
-    //To Do : DoAction
 }
