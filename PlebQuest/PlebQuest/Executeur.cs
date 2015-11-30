@@ -16,7 +16,7 @@ public class CExecuteur
     private SqlCommand cmdSql;
     private SqlDataReader reader;
 
-    public enum Genre { NomTable, NomPS}
+    public enum Genre { NomTable, NomPS }
 
     public CExecuteur()
     {
@@ -24,18 +24,28 @@ public class CExecuteur
         conSql.ConnectionString = DEFAULT_STRING;
     }
 
-    //changer de BD
+    /// <summary>
+    /// modification de la bd à l'intérieur de la chaine de connexion présentement active.
+    /// </summary>
+    /// <param name="nomBD"></param>
     public void ChangerBD(string nomBD)
     {
         conSql.ConnectionString = conSql.ConnectionString.Replace(conSql.Database, nomBD);
     }
 
-    //changer le serveur de la BD
+    /// <summary>
+    /// modification du serveur à l'intérieur de la chainede connexion présentement active.
+    /// </summary>
+    /// <param name="nomServeur"></param>
     public void ChangerServer(string nomServeur)
     {
         conSql.ConnectionString = conSql.ConnectionString.Replace(conSql.DataSource, nomServeur);
     }
 
+    /// <summary>
+    /// Déterminer si la connexion est valide. Pour le savoir il faut tenter une ouverture.
+    /// </summary>
+    /// <returns></returns>
     public bool ConnexionValide()
     {
         try
@@ -51,7 +61,12 @@ public class CExecuteur
         return true;
     }
 
-    //obtenir la structure d'une instruction sans recuperer des exceptions
+    /// <summary>
+    /// obtenir la structure d'une instruction sans recuperer des exceptions
+    /// </summary>
+    /// <param name="inst"></param>
+    /// <param name="nomTable"></param>
+    /// <returns></returns>
     public DataTable ObtenirStruct(string inst, string nomTable)
     {
         cmdSql = new SqlCommand(inst, conSql);
@@ -70,6 +85,11 @@ public class CExecuteur
         return tbStruct;
     }
 
+    /// <summary>
+    /// obtention d'une table (DataTable) contenant la structure d'une instruction SQL, du format SELECT * FROM Table/Vue, ou encore EXECUTE psQuelconque
+    /// </summary>
+    /// <param name="inst"></param>
+    /// <returns></returns>
     public DataTable ObtenirStructure(string inst)
     {
         cmdSql = new SqlCommand(inst, conSql);
@@ -148,7 +168,7 @@ public class CExecuteur
 
             reader.Close();
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             tableCible = null;
         }
@@ -223,7 +243,7 @@ public class CExecuteur
         {
             i = cmdSql.ExecuteNonQuery();
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             MessageBox.Show("ExecProcParams error: " + ex.Message);
         }
@@ -234,13 +254,13 @@ public class CExecuteur
 
         return i;
     }
-
+    
     public bool ExecPsParams(string namePs, DataTable tabTarget, params object[] param)
     {
         string[] nameParam = DonnerNomsParams(namePs);
         bool result = false;
 
-        if(nameParam != null)
+        if (nameParam != null)
         {
             cmdSql = new SqlCommand(namePs, conSql);
             cmdSql.CommandType = CommandType.StoredProcedure;
@@ -256,7 +276,7 @@ public class CExecuteur
 
                 reader = cmdSql.ExecuteReader();
 
-                while(reader.Read())
+                while (reader.Read())
                 {
                     object[] values = new object[reader.FieldCount];
                     reader.GetValues(values);
@@ -266,7 +286,7 @@ public class CExecuteur
                 reader.Close();
                 result = true;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show("error ExecPsParams: " + ex.Message);
                 result = false;
@@ -298,7 +318,7 @@ public class CExecuteur
 
             result = cmdSql.Parameters["@message"].Value.ToString();
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             MessageBox.Show("ExecProcAction: " + ex.Message);
         }
@@ -323,7 +343,7 @@ public class CExecuteur
             conSql.Open();
             reader = cmd.ExecuteReader();
 
-            while(reader.Read())
+            while (reader.Read())
             {
                 Array.Resize(ref nameParams, i + 1);
                 nameParams[i] = Convert.ToString(reader.GetValue(0));
@@ -332,7 +352,7 @@ public class CExecuteur
 
             reader.Close();
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             MessageBox.Show("error DonnerNomsParams: " + ex.Message);
             nameParams = null;
@@ -344,4 +364,44 @@ public class CExecuteur
 
         return nameParams;
     }
+
+
+
+
+    public bool ExecView(string NomView, DataTable targetTable)
+    {
+        bool result = false;
+
+        cmdSql = conSql.CreateCommand();
+        cmdSql.CommandText = "SELECT * FROM " + NomView;
+
+        try
+        {
+            conSql.Open();
+            reader = cmdSql.ExecuteReader();
+
+            while (reader.Read())
+            {
+                object[] values = new object[reader.FieldCount];
+                reader.GetValues(values);
+                targetTable.Rows.Add(values);
+            }
+            
+            reader.Close();
+            result = true;
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show("error ExecView: " + ex.Message);
+            result = false;
+        }
+        finally
+        {
+            conSql.Close();
+        }
+
+        return result;
+    }
 }
+
+
