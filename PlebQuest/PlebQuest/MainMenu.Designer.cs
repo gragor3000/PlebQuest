@@ -49,6 +49,7 @@
             this.lstChar.Name = "lstChar";
             this.lstChar.Size = new System.Drawing.Size(260, 199);
             this.lstChar.TabIndex = 2;
+            this.lstChar.DoubleClick += new System.EventHandler(this.lstChar_DoubleClick);
             // 
             // MainMenu
             // 

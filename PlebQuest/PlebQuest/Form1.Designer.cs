@@ -35,12 +35,12 @@
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.pgbAction = new System.Windows.Forms.ProgressBar();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.listView1 = new System.Windows.Forms.ListView();
+            this.lstCharSheet = new System.Windows.Forms.ListView();
             this.colTrait = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colValue = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.progressBar2 = new System.Windows.Forms.ProgressBar();
+            this.pgbExp = new System.Windows.Forms.ProgressBar();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.listView2 = new System.Windows.Forms.ListView();
             this.colSpell = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -54,7 +54,7 @@
             this.colNbItem = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
-            this.listView5 = new System.Windows.Forms.ListView();
+            this.lstQuest = new System.Windows.Forms.ListView();
             this.colQuest = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.label1 = new System.Windows.Forms.Label();
             this.button4 = new System.Windows.Forms.Button();
@@ -92,14 +92,14 @@
             // loadToolStripMenuItem
             // 
             this.loadToolStripMenuItem.Name = "loadToolStripMenuItem";
-            this.loadToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.loadToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
             this.loadToolStripMenuItem.Text = "Load";
             this.loadToolStripMenuItem.Click += new System.EventHandler(this.loadToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             // 
             // toolStripMenuItem1
@@ -123,17 +123,17 @@
             this.helpToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             this.helpToolStripMenuItem.Text = "Help";
             // 
-            // progressBar1
+            // pgbAction
             // 
-            this.progressBar1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
-            this.progressBar1.Location = new System.Drawing.Point(0, 539);
-            this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(656, 23);
-            this.progressBar1.TabIndex = 1;
+            this.pgbAction.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
+            this.pgbAction.Location = new System.Drawing.Point(0, 539);
+            this.pgbAction.Name = "pgbAction";
+            this.pgbAction.Size = new System.Drawing.Size(656, 23);
+            this.pgbAction.TabIndex = 1;
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.listView1);
+            this.groupBox1.Controls.Add(this.lstCharSheet);
             this.groupBox1.Location = new System.Drawing.Point(6, 27);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(200, 224);
@@ -141,17 +141,17 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Character sheet";
             // 
-            // listView1
+            // lstCharSheet
             // 
-            this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.lstCharSheet.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.colTrait,
             this.colValue});
-            this.listView1.Location = new System.Drawing.Point(7, 20);
-            this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(187, 197);
-            this.listView1.TabIndex = 0;
-            this.listView1.UseCompatibleStateImageBehavior = false;
-            this.listView1.View = System.Windows.Forms.View.Details;
+            this.lstCharSheet.Location = new System.Drawing.Point(7, 20);
+            this.lstCharSheet.Name = "lstCharSheet";
+            this.lstCharSheet.Size = new System.Drawing.Size(187, 197);
+            this.lstCharSheet.TabIndex = 0;
+            this.lstCharSheet.UseCompatibleStateImageBehavior = false;
+            this.lstCharSheet.View = System.Windows.Forms.View.Details;
             // 
             // colTrait
             // 
@@ -163,13 +163,12 @@
             this.colValue.Text = "Value";
             this.colValue.Width = 102;
             // 
-            // progressBar2
+            // pgbExp
             // 
-            this.progressBar2.Location = new System.Drawing.Point(6, 276);
-            this.progressBar2.Name = "progressBar2";
-            this.progressBar2.Size = new System.Drawing.Size(200, 13);
-            this.progressBar2.TabIndex = 6;
-            this.progressBar2.Click += new System.EventHandler(this.progressBar2_Click);
+            this.pgbExp.Location = new System.Drawing.Point(6, 276);
+            this.pgbExp.Name = "pgbExp";
+            this.pgbExp.Size = new System.Drawing.Size(200, 13);
+            this.pgbExp.TabIndex = 6;
             // 
             // groupBox2
             // 
@@ -269,7 +268,7 @@
             // 
             // groupBox5
             // 
-            this.groupBox5.Controls.Add(this.listView5);
+            this.groupBox5.Controls.Add(this.lstQuest);
             this.groupBox5.Location = new System.Drawing.Point(529, 27);
             this.groupBox5.Name = "groupBox5";
             this.groupBox5.Size = new System.Drawing.Size(243, 506);
@@ -277,16 +276,16 @@
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Character equipment";
             // 
-            // listView5
+            // lstQuest
             // 
-            this.listView5.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.lstQuest.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.colQuest});
-            this.listView5.Location = new System.Drawing.Point(6, 19);
-            this.listView5.Name = "listView5";
-            this.listView5.Size = new System.Drawing.Size(231, 481);
-            this.listView5.TabIndex = 1;
-            this.listView5.UseCompatibleStateImageBehavior = false;
-            this.listView5.View = System.Windows.Forms.View.Details;
+            this.lstQuest.Location = new System.Drawing.Point(6, 19);
+            this.lstQuest.Name = "lstQuest";
+            this.lstQuest.Size = new System.Drawing.Size(231, 481);
+            this.lstQuest.TabIndex = 1;
+            this.lstQuest.UseCompatibleStateImageBehavior = false;
+            this.lstQuest.View = System.Windows.Forms.View.Details;
             // 
             // colQuest
             // 
@@ -352,12 +351,12 @@
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
-            this.Controls.Add(this.progressBar2);
+            this.Controls.Add(this.pgbExp);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
-            this.Controls.Add(this.progressBar1);
+            this.Controls.Add(this.pgbAction);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
@@ -385,13 +384,13 @@
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
-        private System.Windows.Forms.ProgressBar progressBar1;
+        private System.Windows.Forms.ProgressBar pgbAction;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.ListView listView1;
-        private System.Windows.Forms.ProgressBar progressBar2;
+        private System.Windows.Forms.ListView lstCharSheet;
+        private System.Windows.Forms.ProgressBar pgbExp;
         private System.Windows.Forms.ColumnHeader colTrait;
         private System.Windows.Forms.ColumnHeader colValue;
         private System.Windows.Forms.GroupBox groupBox2;
@@ -407,7 +406,7 @@
         private System.Windows.Forms.ColumnHeader colNbItem;
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.GroupBox groupBox5;
-        private System.Windows.Forms.ListView listView5;
+        private System.Windows.Forms.ListView lstQuest;
         private System.Windows.Forms.ColumnHeader colQuest;
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Label label1;

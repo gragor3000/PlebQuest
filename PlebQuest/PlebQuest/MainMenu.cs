@@ -63,5 +63,18 @@ namespace PlebQuest
                 MessageBox.Show("Please select a character.");
             }
         }
+
+        private void lstChar_DoubleClick(object sender, EventArgs e)
+        {
+            if(lstChar.SelectedIndex > -1)
+            {
+                string[] data = lstChar.Items[lstChar.SelectedIndex].ToString().Split(' ');
+
+                Form1 GUI = new Form1(int.Parse(data[0]));
+                this.Hide();
+                GUI.Show();
+            }
+                
+        }
     }
 }
