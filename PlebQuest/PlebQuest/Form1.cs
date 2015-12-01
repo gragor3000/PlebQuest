@@ -12,9 +12,9 @@ namespace PlebQuest
 {
     public partial class Form1 : Form
     {
-        int idPerso;
-        DataTable sheet = new DataTable();
-        DataTable raceDt = new DataTable();
+        int idPerso;                        //id du perso
+        DataTable sheet = new DataTable();  //table du character
+        DataTable raceDt = new DataTable(); //table de race (ne change jms)
 
         public Form1(int idPerso)
         {
@@ -27,11 +27,26 @@ namespace PlebQuest
             pgbAction.ForeColor = Color.FromArgb(6030325);
             pgbExp.ForeColor = Color.FromArgb(6030325);
 
+            DisplaySheet();
+        }
+
+
+        private void loadToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Form1_Leave(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void DisplaySheet()
+        {
             CExecuteur exe = new CExecuteur();
 
             if (exe.ConnexionValide())
             {
-                
                 sheet.Columns.Add("ID", typeof(Int32));
                 sheet.Columns.Add("Name", typeof(string));
                 sheet.Columns.Add("CurrentHP", typeof(Int32));
@@ -51,7 +66,6 @@ namespace PlebQuest
                 exe.ExecPsParams("sp_GetCharacterInfo", sheet, idPerso);
 
                 //SetToolTip
-                
                 raceDt.Columns.Add("ID", typeof(Int32));
                 raceDt.Columns.Add("Name", typeof(string));
                 raceDt.Columns.Add("Desc", typeof(string));
@@ -67,6 +81,44 @@ namespace PlebQuest
                 classDt.Columns.Add("Name", typeof(string));
                 classDt.Columns.Add("Desc", typeof(string));
                 exe.ExecPsParams("sp_GetClassStats", classDt, sheet.Rows[0][14]);
+
+                DataTable equipIdDt = new DataTable();
+                equipIdDt.Columns.Add("ID", typeof(Int32));
+                exe.ExecPsParams("sp_GetEquipment", equipIdDt, idPerso);
+                DataTable equipDt = new DataTable();
+                equipDt.Columns.Add("ID", typeof(Int32));
+                equipDt.Columns.Add("Name", typeof(string));
+                equipDt.Columns.Add("Value", typeof(Int32));
+                equipDt.Columns.Add("Str", typeof(Int32));
+                equipDt.Columns.Add("Dex", typeof(Int32));
+                equipDt.Columns.Add("Int", typeof(Int32));
+                equipDt.Columns.Add("Con", typeof(Int32));
+                equipDt.Columns.Add("Cha", typeof(Int32));
+                equipDt.Columns.Add("TypeID", typeof(Int32));
+
+
+                int strEquip = 0;   //add les stat d'equipment
+                int dexEquip = 0;   //add les stat d'equipment
+                int intEquip = 0;   //add les stat d'equipment
+                int conEquip = 0;   //add les stat d'equipment
+                int chaEquip = 0;   //add les stat d'equipment
+                for (int i = 0; i < equipIdDt.Rows.Count; i++)
+                {
+                    exe.ExecPsParams("sp_GetEquipmentInfo", equipDt, (Int32)equipIdDt.Rows[i][0]);
+
+                    strEquip += (Int32)equipDt.Rows[0][3];
+                    dexEquip += (Int32)equipDt.Rows[0][4];
+                    intEquip += (Int32)equipDt.Rows[0][5];
+                    conEquip += (Int32)equipDt.Rows[0][6];
+                    chaEquip += (Int32)equipDt.Rows[0][7];
+                }                
+
+                for (int i = 0; i < equipDt.Rows.Count; i++)
+                {
+                    string a;
+                    if (equipDt.Rows[i][1].ToString() != "")
+                        a = equipDt.Rows[i][1].ToString();
+                }
 
                 ListViewItem rowName = new ListViewItem("Name");
                 rowName.SubItems.Add(sheet.Rows[0][1].ToString());
@@ -84,100 +136,30 @@ namespace PlebQuest
                 rowExp.SubItems.Add(sheet.Rows[0][6].ToString() + "/" + sheet.Rows[0][7].ToString());
                 ListViewItem rowStr = new ListViewItem("Strength");
                 int strChar = (Int32)sheet.Rows[0][9] + ((Int32)sheet.Rows[0][5] * (Int32)raceDt.Rows[0][3]);
-                int strEquip = 0;   //add les stat d'equipment
-                rowStr.SubItems.Add(strChar.ToString());
+                rowStr.SubItems.Add((strChar + strEquip).ToString());
                 ListViewItem rowDext = new ListViewItem("Dexterity");
                 int dexChar = (Int32)sheet.Rows[0][10] + ((Int32)sheet.Rows[0][5] * (Int32)raceDt.Rows[0][4]);
-                int dexEquip = 0;   //add les stat d'equipment
-                rowDext.SubItems.Add(dexChar.ToString());
+                rowStr.SubItems.Add((dexChar + dexEquip).ToString());
                 ListViewItem rowInt = new ListViewItem("Intel");
                 int intChar = (Int32)sheet.Rows[0][11] + ((Int32)sheet.Rows[0][5] * (Int32)raceDt.Rows[0][5]);
-                int intEquip = 0;   //add les stat d'equipment
-                rowInt.SubItems.Add(intChar.ToString());
+                rowStr.SubItems.Add((intChar + intEquip).ToString());
                 ListViewItem rowCon = new ListViewItem("Constitution");
                 int conChar = (Int32)sheet.Rows[0][12] + ((Int32)sheet.Rows[0][5] * (Int32)raceDt.Rows[0][6]);
-                int conEquip = 0;   //add les stat d'equipment
-                rowCon.SubItems.Add(conChar.ToString());
+                rowStr.SubItems.Add((conChar + conEquip).ToString());
                 ListViewItem rowCha = new ListViewItem("Charisma");
                 int chaChar = (Int32)sheet.Rows[0][13] + ((Int32)sheet.Rows[0][5] * (Int32)raceDt.Rows[0][7]);
-                int chaEquip = 0;   //add les stat d'equipment
-                rowCha.SubItems.Add(chaChar.ToString());
+                rowStr.SubItems.Add((chaChar + chaEquip).ToString());
 
 
                 lstCharSheet.Items.AddRange(new ListViewItem[] { rowName, rowRace, rowClass, rowHP, rowGold, rowExp, rowLevel, rowStr, rowDext, rowInt, rowCon, rowCha });
+
+                pgbExp.Maximum = (Int32)sheet.Rows[0][7];
+                pgbExp.Value = (Int32)sheet.Rows[0][6];
             }
             else
             {
                 MessageBox.Show("could not connect");
             }
-
-            /*
-            ListViewItem rowName = new ListViewItem("Name");
-            rowName.SubItems.Add("Dragonmost");
-
-            ListViewItem rowRace = new ListViewItem("Race");
-            rowRace.SubItems.Add("Dwarf");
-
-            ListViewItem rowClass = new ListViewItem("Class");
-            rowClass.SubItems.Add("Paladin");
-
-            ListViewItem rowHP = new ListViewItem("HP");
-            rowHP.SubItems.Add("200/200");
-
-            ListViewItem rowGold= new ListViewItem("Gold");
-            rowGold.SubItems.Add("10k");
-
-            ListViewItem rowExp = new ListViewItem("Exp");
-            rowExp.SubItems.Add("150/150");
-
-            ListViewItem rowLevel = new ListViewItem("Level");
-            rowLevel.SubItems.Add("100");
-
-            ListViewItem rowStr = new ListViewItem("Strength");
-            rowStr.SubItems.Add("150");
-
-            ListViewItem rowDext = new ListViewItem("Dexterity");
-            rowDext.SubItems.Add("150");
-
-            ListViewItem rowInt = new ListViewItem("Intelligence");
-            rowInt.SubItems.Add("150");
-
-            ListViewItem rowCon = new ListViewItem("Constitution");
-            rowCon.SubItems.Add("150");
-
-            ListViewItem rowCha = new ListViewItem("Charisma");
-            rowCha.SubItems.Add("150");
-
-            listView1.Items.AddRange(new ListViewItem[] { rowName, rowRace, rowClass, rowHP, rowGold, rowExp, rowLevel, rowStr, rowDext, rowInt, rowCon, rowCha });
-
-            ListViewItem rowWeap = new ListViewItem("Weapon");
-            rowWeap.SubItems.Add("Lightbringer");
-
-            ListViewItem rowHead = new ListViewItem("Head");
-            rowHead.SubItems.Add("Lightsword Faceguard");
-
-            ListViewItem rowChess = new ListViewItem("Chess");
-            rowChess.SubItems.Add("Lightsworn Chessguard");
-
-            ListViewItem rowPants = new ListViewItem("Pants");
-            rowPants.SubItems.Add("Lightsworn Legguard");
-
-            ListViewItem rowBoots = new ListViewItem("Boots");
-            rowBoots.SubItems.Add("Lightsworn Boots");
-
-            listView3.Items.AddRange(new ListViewItem[] { rowWeap, rowHead, rowChess, rowPants, rowBoots });
-            */
-        }
-
-
-        private void loadToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void Form1_Leave(object sender, EventArgs e)
-        {
-            this.Close();
         }
     }
 }
