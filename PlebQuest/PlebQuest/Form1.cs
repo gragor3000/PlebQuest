@@ -12,16 +12,19 @@ namespace PlebQuest
 {
     public partial class Form1 : Form
     {
-        int idPerso;                        //id du perso
-        DataTable sheet = new DataTable();  //table du character
-        DataTable raceDt = new DataTable(); //table de race (ne change jms)
-        CExecuteur exe;
+        int idPerso;        //id du perso
+        DataTable sheet;    //table du character
+        DataTable raceDt;   //table de race (ne change jms)
+        CExecuteur exe;     //executeur qui communique avec la BD
+        Timer timer;        //le timer qui compte les ticks pour les actions
 
         public Form1(int idPerso)
         {
             this.idPerso = idPerso;
             InitializeComponent();
             exe = new CExecuteur();
+            timer = new Timer();
+            timer.Interval = 50;
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -34,8 +37,31 @@ namespace PlebQuest
             FillSpell();
             FillLoot();
             FillQuest();
+
+            timer.Tick += Timer_Tick;
+            timer.Start();
         }
 
+        /// <summary>
+        /// event declencher a chaque tick du timer
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+            pgbAction.Increment(1);
+            //si la progress bar est pleine
+            if(pgbAction.Value == pgbAction.Maximum)
+            {
+                pgbAction.Value = 0;
+
+                DisplaySheet();
+                FillEquip();
+                FillSpell();
+                FillLoot();
+                FillQuest();
+            }
+        }
 
         private void loadToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -49,12 +75,17 @@ namespace PlebQuest
             this.Close();
         }
 
+        /// <summary>
+        /// rempli le character sheet
+        /// </summary>
         private void DisplaySheet()
         {
+            //si lappel a la BD a foncitonner
             if (exe.ConnexionValide())
             {
                 lstCharSheet.Items.Clear();
 
+                sheet = new DataTable();
                 sheet.Columns.Add("ID", typeof(Int32));
                 sheet.Columns.Add("Name", typeof(string));
                 sheet.Columns.Add("CurrentHP", typeof(Int32));
@@ -74,6 +105,7 @@ namespace PlebQuest
                 exe.ExecPsParams("sp_GetCharacterInfo", sheet, idPerso);
 
                 //SetToolTip
+                raceDt = new DataTable();
                 raceDt.Columns.Add("ID", typeof(Int32));
                 raceDt.Columns.Add("Name", typeof(string));
                 raceDt.Columns.Add("Desc", typeof(string));
@@ -104,7 +136,8 @@ namespace PlebQuest
                 equipDt.Columns.Add("Con", typeof(Int32));
                 equipDt.Columns.Add("Cha", typeof(Int32));
                 equipDt.Columns.Add("TypeID", typeof(Int32));
-
+                
+                //compte les stats que l'armure apporte au character
                 int strEquip = 0;   //add les stat d'equipment
                 int dexEquip = 0;   //add les stat d'equipment
                 int intEquip = 0;   //add les stat d'equipment
@@ -121,13 +154,7 @@ namespace PlebQuest
                     chaEquip += (Int32)equipDt.Rows[0][7];
                 }                
 
-                for (int i = 0; i < equipDt.Rows.Count; i++)
-                {
-                    string a;
-                    if (equipDt.Rows[i][1].ToString() != "")
-                        a = equipDt.Rows[i][1].ToString();
-                }
-
+                //ecrit dans la listview
                 ListViewItem rowName = new ListViewItem("Name");
                 rowName.SubItems.Add(sheet.Rows[0]["Name"].ToString());
                 ListViewItem rowRace = new ListViewItem("Race");
@@ -169,6 +196,9 @@ namespace PlebQuest
             }
         }
 
+        /// <summary>
+        /// remplis la listview d'equipment
+        /// </summary>
         public void FillEquip()
         {
             lstEquip.Items.Clear();
@@ -232,6 +262,9 @@ namespace PlebQuest
             lstEquip.Items.AddRange(new ListViewItem[] { rowHead, rowChest, rowPants, rowBoots, rowWeapon });
         }
 
+        /// <summary>
+        /// remplis la listview de scrolls
+        /// </summary>
         private void FillSpell()
         {
             lstSpell.Items.Clear();
@@ -251,6 +284,9 @@ namespace PlebQuest
             }
         }
 
+        /// <summary>
+        /// remplis la listview de loot
+        /// </summary>
         private void FillLoot()
         {
             lstLoot.Items.Clear();
@@ -270,6 +306,9 @@ namespace PlebQuest
             }
         }
 
+        /// <summary>
+        /// remplis la listview de quest
+        /// </summary>
         private void FillQuest()
         {
             lstQuest.Items.Clear();
@@ -288,6 +327,34 @@ namespace PlebQuest
 
                 lstQuest.Items.AddRange(new ListViewItem[] { row });
             }
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void btnPlay_Click(object sender, EventArgs e)
+        {
+            timer.Interval = 50;
+            timer.Start();
+        }
+
+        private void btnPause_Click(object sender, EventArgs e)
+        {
+            timer.Stop();
+        }
+
+        private void btnSlower_Click(object sender, EventArgs e)
+        {
+            timer.Interval = 80;
+            timer.Start();
+        }
+
+        private void btnFaster_Click(object sender, EventArgs e)
+        {
+            timer.Interval = 10;
+            timer.Start();
         }
     }
 }

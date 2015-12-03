@@ -61,7 +61,7 @@ public class CExecuteur
         return true;
     }
 
-    /// <summary>
+   /* /// <summary>
     /// obtenir la structure d'une instruction sans recuperer des exceptions
     /// </summary>
     /// <param name="inst"></param>
@@ -180,24 +180,24 @@ public class CExecuteur
         return i;
     }
 
-    /*
-    public DataTable ExtraireLigne(string inst)
-    {
-        DataTable tabResult = new DataTable();
-
-        DataTable tabStruct = ObtenirStruct(inst, "tempo");
-
-        for (int i = 0; i < tabStruct.Rows.Count; i++)
-        {
-            DataColumn col = new DataColumn(Convert.ToString(tabStruct.Rows[i]["ColumnName"], Convert.ToString(tabStruct.Rows[i]["DataType"]), System.Type));
-            //UneColonne = new DataColumn(Convert.ToString(tabStructure.Rows[indice].Item("ColumnName")), (System.Type)tabStructure.Rows[indice].Item("DataType"));
-
-            tabResult.Columns.Add(col);
-        }
-
-        ExtraireLigne(inst, tabResult);
-        return tabResult;
-    }*/
+    
+    //public DataTable ExtraireLigne(string inst)
+    //{
+    //    DataTable tabResult = new DataTable();
+    //
+    //    DataTable tabStruct = ObtenirStruct(inst, "tempo");
+    //
+    //    for (int i = 0; i < tabStruct.Rows.Count; i++)
+    //    {
+    //        DataColumn col = new DataColumn(Convert.ToString(tabStruct.Rows[i]["ColumnName"], Convert.ToString(tabStruct.Rows[i]["DataType"]), System.Type));
+    //        //UneColonne = new DataColumn(Convert.ToString(tabStructure.Rows[indice].Item("ColumnName")), (System.Type)tabStructure.Rows[indice].Item("DataType"));
+    //
+    //        tabResult.Columns.Add(col);
+    //    }
+    //
+    //    ExtraireLigne(inst, tabResult);
+    //    return tabResult;
+    //}
 
     public DataTable ExtraireTable(string inst, DataTable tabstruct)
     {
@@ -254,7 +254,15 @@ public class CExecuteur
 
         return i;
     }
-    
+    */
+
+    /// <summary>
+    /// Appel une procedure stocké
+    /// </summary>
+    /// <param name="namePs">nom de la procedure</param>
+    /// <param name="tabTarget">DataTable dans la quel on vx le resultat</param>
+    /// <param name="param">parametre de la SP</param>
+    /// <returns>le resultat d'une procedure stocké</returns>
     public bool ExecPsParams(string namePs, DataTable tabTarget, params object[] param)
     {
         string[] nameParam = DonnerNomsParams(namePs);
@@ -298,7 +306,7 @@ public class CExecuteur
         }
         return result;
     }
-
+    /*
     public string ExecProcAction(string inst, int code, int achat)
     {
         cmdSql = new SqlCommand(inst, conSql);
@@ -329,7 +337,13 @@ public class CExecuteur
 
         return result;
     }
+    */
 
+    /// <summary>
+    /// cherche le nom dun parametre
+    /// </summary>
+    /// <param name="namePs">nom de la procedure stocké</param>
+    /// <returns>le nom du parametre</returns>
     public string[] DonnerNomsParams(string namePs)
     {
         string[] nameParams = { };
@@ -365,9 +379,12 @@ public class CExecuteur
         return nameParams;
     }
 
-
-
-
+    /// <summary>
+    /// Appel une view
+    /// </summary>
+    /// <param name="NomView">nom de la view a appeler</param>
+    /// <param name="targetTable">la DataTable a remplir avec le resultat de la view</param>
+    /// <returns>view donne en parametre</returns>
     public bool ExecView(string NomView, DataTable targetTable)
     {
         bool result = false;

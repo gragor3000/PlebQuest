@@ -57,10 +57,10 @@
             this.lstQuest = new System.Windows.Forms.ListView();
             this.colQuest = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.label1 = new System.Windows.Forms.Label();
-            this.button4 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
+            this.btnSlower = new System.Windows.Forms.Button();
+            this.btnPlay = new System.Windows.Forms.Button();
+            this.btnFaster = new System.Windows.Forms.Button();
+            this.btnPause = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -101,6 +101,7 @@
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
             this.exitToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
             this.exitToolStripMenuItem.Text = "Exit";
+            this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
             // toolStripMenuItem1
             // 
@@ -301,61 +302,65 @@
             this.label1.TabIndex = 12;
             this.label1.Text = "Experience";
             // 
-            // button4
+            // btnSlower
             // 
-            this.button4.BackgroundImage = global::PlebQuest.Properties.Resources.glyphicons_173_rewind;
-            this.button4.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.button4.Location = new System.Drawing.Point(662, 539);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(23, 23);
-            this.button4.TabIndex = 11;
-            this.button4.UseVisualStyleBackColor = true;
+            this.btnSlower.BackgroundImage = global::PlebQuest.Properties.Resources.glyphicons_173_rewind;
+            this.btnSlower.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.btnSlower.Location = new System.Drawing.Point(662, 539);
+            this.btnSlower.Name = "btnSlower";
+            this.btnSlower.Size = new System.Drawing.Size(23, 23);
+            this.btnSlower.TabIndex = 11;
+            this.btnSlower.UseVisualStyleBackColor = true;
+            this.btnSlower.Click += new System.EventHandler(this.btnSlower_Click);
             // 
-            // button3
+            // btnPlay
             // 
-            this.button3.BackgroundImage = global::PlebQuest.Properties.Resources.glyphicons_174_play;
-            this.button3.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.button3.Location = new System.Drawing.Point(720, 539);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(23, 23);
-            this.button3.TabIndex = 4;
-            this.button3.UseVisualStyleBackColor = true;
+            this.btnPlay.BackgroundImage = global::PlebQuest.Properties.Resources.glyphicons_174_play;
+            this.btnPlay.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.btnPlay.Location = new System.Drawing.Point(720, 539);
+            this.btnPlay.Name = "btnPlay";
+            this.btnPlay.Size = new System.Drawing.Size(23, 23);
+            this.btnPlay.TabIndex = 4;
+            this.btnPlay.UseVisualStyleBackColor = true;
+            this.btnPlay.Click += new System.EventHandler(this.btnPlay_Click);
             // 
-            // button2
+            // btnFaster
             // 
-            this.button2.BackgroundImage = global::PlebQuest.Properties.Resources.glyphicons_177_forward;
-            this.button2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.button2.Location = new System.Drawing.Point(749, 539);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(23, 23);
-            this.button2.TabIndex = 3;
-            this.button2.UseVisualStyleBackColor = true;
+            this.btnFaster.BackgroundImage = global::PlebQuest.Properties.Resources.glyphicons_177_forward;
+            this.btnFaster.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.btnFaster.Location = new System.Drawing.Point(749, 539);
+            this.btnFaster.Name = "btnFaster";
+            this.btnFaster.Size = new System.Drawing.Size(23, 23);
+            this.btnFaster.TabIndex = 3;
+            this.btnFaster.UseVisualStyleBackColor = true;
+            this.btnFaster.Click += new System.EventHandler(this.btnFaster_Click);
             // 
-            // button1
+            // btnPause
             // 
-            this.button1.BackgroundImage = global::PlebQuest.Properties.Resources.glyphicons_175_pause;
-            this.button1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.button1.Location = new System.Drawing.Point(691, 539);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(23, 23);
-            this.button1.TabIndex = 2;
-            this.button1.UseVisualStyleBackColor = true;
+            this.btnPause.BackgroundImage = global::PlebQuest.Properties.Resources.glyphicons_175_pause;
+            this.btnPause.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.btnPause.Location = new System.Drawing.Point(691, 539);
+            this.btnPause.Name = "btnPause";
+            this.btnPause.Size = new System.Drawing.Size(23, 23);
+            this.btnPause.TabIndex = 2;
+            this.btnPause.UseVisualStyleBackColor = true;
+            this.btnPause.Click += new System.EventHandler(this.btnPause_Click);
             // 
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(784, 562);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.button4);
+            this.Controls.Add(this.btnSlower);
             this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.pgbExp);
             this.Controls.Add(this.groupBox1);
-            this.Controls.Add(this.button3);
-            this.Controls.Add(this.button2);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.btnPlay);
+            this.Controls.Add(this.btnFaster);
+            this.Controls.Add(this.btnPause);
             this.Controls.Add(this.pgbAction);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
@@ -385,9 +390,9 @@
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.ProgressBar pgbAction;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button btnPause;
+        private System.Windows.Forms.Button btnFaster;
+        private System.Windows.Forms.Button btnPlay;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.ListView lstCharSheet;
         private System.Windows.Forms.ProgressBar pgbExp;
@@ -408,7 +413,7 @@
         private System.Windows.Forms.GroupBox groupBox5;
         private System.Windows.Forms.ListView lstQuest;
         private System.Windows.Forms.ColumnHeader colQuest;
-        private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.Button btnSlower;
         private System.Windows.Forms.Label label1;
     }
 }
