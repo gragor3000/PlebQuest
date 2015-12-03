@@ -42,14 +42,14 @@
             this.colValue = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.pgbExp = new System.Windows.Forms.ProgressBar();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.listView2 = new System.Windows.Forms.ListView();
+            this.lstSpell = new System.Windows.Forms.ListView();
             this.colSpell = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colNbSpell = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.listView3 = new System.Windows.Forms.ListView();
+            this.lstEquip = new System.Windows.Forms.ListView();
             this.colEquip = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colEquipName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.listView4 = new System.Windows.Forms.ListView();
+            this.lstLoot = new System.Windows.Forms.ListView();
             this.colItem = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colNbItem = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.groupBox4 = new System.Windows.Forms.GroupBox();
@@ -172,7 +172,7 @@
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.listView2);
+            this.groupBox2.Controls.Add(this.lstSpell);
             this.groupBox2.Location = new System.Drawing.Point(6, 295);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(200, 238);
@@ -180,17 +180,17 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Grimoire";
             // 
-            // listView2
+            // lstSpell
             // 
-            this.listView2.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.lstSpell.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.colSpell,
             this.colNbSpell});
-            this.listView2.Location = new System.Drawing.Point(7, 20);
-            this.listView2.Name = "listView2";
-            this.listView2.Size = new System.Drawing.Size(187, 212);
-            this.listView2.TabIndex = 0;
-            this.listView2.UseCompatibleStateImageBehavior = false;
-            this.listView2.View = System.Windows.Forms.View.Details;
+            this.lstSpell.Location = new System.Drawing.Point(7, 20);
+            this.lstSpell.Name = "lstSpell";
+            this.lstSpell.Size = new System.Drawing.Size(187, 212);
+            this.lstSpell.TabIndex = 0;
+            this.lstSpell.UseCompatibleStateImageBehavior = false;
+            this.lstSpell.View = System.Windows.Forms.View.Details;
             // 
             // colSpell
             // 
@@ -204,7 +204,7 @@
             // 
             // groupBox3
             // 
-            this.groupBox3.Controls.Add(this.listView3);
+            this.groupBox3.Controls.Add(this.lstEquip);
             this.groupBox3.Location = new System.Drawing.Point(212, 27);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(311, 142);
@@ -212,17 +212,17 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Character equipment";
             // 
-            // listView3
+            // lstEquip
             // 
-            this.listView3.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.lstEquip.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.colEquip,
             this.colEquipName});
-            this.listView3.Location = new System.Drawing.Point(6, 19);
-            this.listView3.Name = "listView3";
-            this.listView3.Size = new System.Drawing.Size(299, 115);
-            this.listView3.TabIndex = 1;
-            this.listView3.UseCompatibleStateImageBehavior = false;
-            this.listView3.View = System.Windows.Forms.View.Details;
+            this.lstEquip.Location = new System.Drawing.Point(6, 19);
+            this.lstEquip.Name = "lstEquip";
+            this.lstEquip.Size = new System.Drawing.Size(299, 115);
+            this.lstEquip.TabIndex = 1;
+            this.lstEquip.UseCompatibleStateImageBehavior = false;
+            this.lstEquip.View = System.Windows.Forms.View.Details;
             // 
             // colEquip
             // 
@@ -234,17 +234,17 @@
             this.colEquipName.Text = "Name";
             this.colEquipName.Width = 225;
             // 
-            // listView4
+            // lstLoot
             // 
-            this.listView4.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.lstLoot.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.colItem,
             this.colNbItem});
-            this.listView4.Location = new System.Drawing.Point(6, 19);
-            this.listView4.Name = "listView4";
-            this.listView4.Size = new System.Drawing.Size(299, 333);
-            this.listView4.TabIndex = 1;
-            this.listView4.UseCompatibleStateImageBehavior = false;
-            this.listView4.View = System.Windows.Forms.View.Details;
+            this.lstLoot.Location = new System.Drawing.Point(6, 19);
+            this.lstLoot.Name = "lstLoot";
+            this.lstLoot.Size = new System.Drawing.Size(299, 333);
+            this.lstLoot.TabIndex = 1;
+            this.lstLoot.UseCompatibleStateImageBehavior = false;
+            this.lstLoot.View = System.Windows.Forms.View.Details;
             // 
             // colItem
             // 
@@ -258,7 +258,7 @@
             // 
             // groupBox4
             // 
-            this.groupBox4.Controls.Add(this.listView4);
+            this.groupBox4.Controls.Add(this.lstLoot);
             this.groupBox4.Location = new System.Drawing.Point(212, 175);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(311, 358);
@@ -274,7 +274,7 @@
             this.groupBox5.Size = new System.Drawing.Size(243, 506);
             this.groupBox5.TabIndex = 10;
             this.groupBox5.TabStop = false;
-            this.groupBox5.Text = "Character equipment";
+            this.groupBox5.Text = "Plebest Storyline";
             // 
             // lstQuest
             // 
@@ -394,14 +394,14 @@
         private System.Windows.Forms.ColumnHeader colTrait;
         private System.Windows.Forms.ColumnHeader colValue;
         private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.ListView listView2;
+        private System.Windows.Forms.ListView lstSpell;
         private System.Windows.Forms.ColumnHeader colSpell;
         private System.Windows.Forms.ColumnHeader colNbSpell;
         private System.Windows.Forms.GroupBox groupBox3;
-        private System.Windows.Forms.ListView listView3;
+        private System.Windows.Forms.ListView lstEquip;
         private System.Windows.Forms.ColumnHeader colEquip;
         private System.Windows.Forms.ColumnHeader colEquipName;
-        private System.Windows.Forms.ListView listView4;
+        private System.Windows.Forms.ListView lstLoot;
         private System.Windows.Forms.ColumnHeader colItem;
         private System.Windows.Forms.ColumnHeader colNbItem;
         private System.Windows.Forms.GroupBox groupBox4;

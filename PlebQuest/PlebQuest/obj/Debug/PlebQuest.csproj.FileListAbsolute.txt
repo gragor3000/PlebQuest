@@ -1,10 +1,10 @@
 C:\Users\1229753\Documents\PlebQuest\PlebQuest\PlebQuest\bin\Debug\PlebQuest.exe.config
-C:\Users\1229753\Documents\PlebQuest\PlebQuest\PlebQuest\obj\Debug\PlebQuest.csprojResolveAssemblyReference.cache
-C:\Users\1229753\Documents\PlebQuest\PlebQuest\PlebQuest\obj\Debug\PlebQuest.Form1.resources
-C:\Users\1229753\Documents\PlebQuest\PlebQuest\PlebQuest\obj\Debug\PlebQuest.Properties.Resources.resources
-C:\Users\1229753\Documents\PlebQuest\PlebQuest\PlebQuest\obj\Debug\PlebQuest.csproj.GenerateResource.Cache
 C:\Users\1229753\Documents\PlebQuest\PlebQuest\PlebQuest\bin\Debug\PlebQuest.exe
 C:\Users\1229753\Documents\PlebQuest\PlebQuest\PlebQuest\bin\Debug\PlebQuest.pdb
+C:\Users\1229753\Documents\PlebQuest\PlebQuest\PlebQuest\obj\Debug\PlebQuest.Form1.resources
+C:\Users\1229753\Documents\PlebQuest\PlebQuest\PlebQuest\obj\Debug\PlebQuest.MainMenu.resources
+C:\Users\1229753\Documents\PlebQuest\PlebQuest\PlebQuest\obj\Debug\PlebQuest.Properties.Resources.resources
+C:\Users\1229753\Documents\PlebQuest\PlebQuest\PlebQuest\obj\Debug\PlebQuest.csproj.GenerateResource.Cache
 C:\Users\1229753\Documents\PlebQuest\PlebQuest\PlebQuest\obj\Debug\PlebQuest.exe
 C:\Users\1229753\Documents\PlebQuest\PlebQuest\PlebQuest\obj\Debug\PlebQuest.pdb
-C:\Users\1229753\Documents\PlebQuest\PlebQuest\PlebQuest\obj\Debug\PlebQuest.MainMenu.resources
+C:\Users\1229753\Documents\PlebQuest\PlebQuest\PlebQuest\obj\Debug\PlebQuest.csprojResolveAssemblyReference.cache
