@@ -3,7 +3,7 @@ CREATE PROCEDURE sp_Action(@CharID int)
 AS
 BEGIN
 	 	
-	if((SELECT COUNT(*) FROM Combat) > 0)
+	if((SELECT COUNT(*) FROM Combat WHERE CombatCharactersID = @CharID) > 0)
 	BEGIN
 		DECLARE @TableMonster Table(Dps int,Exps int,gold int)
 		DECLARE @Turn bit
@@ -35,6 +35,7 @@ BEGIN
 				UPDATE Characters SET CharactersCurrentHP = CharactersCurrentHP + (Select SpellHeal FROM @HealSpell) WHERE CharactersID = @CharID
 				UPDATE SpellQuantity SET SpellQuantityQuantity = SpellQuantityQuantity - 1 WHERE SpellQuantityCharactersID = @CharID
 			END
+
 			Else if(@Random <= 30)--spell d'Attack
 			BEGIN
 				DECLARE @DmgSpell TABLE(SpellID int,SpellDmg int)
@@ -43,6 +44,7 @@ BEGIN
 				UPDATE Combat SET CombatMonsterHP = CombatMonsterHP - (SELECT SpellDmg FROM @DmgSpell) WHERE CombatCharactersID = @CharID
 				UPDATE SpellQuantity SET SpellQuantityQuantity = SpellQuantityQuantity - 1 WHERE SpellQuantityCharactersID = @CharID
 			END
+
 			ELSE--attack normal
 			BEGIN
 				DECLARE @EquipID int
@@ -66,4 +68,69 @@ BEGIN
 			END
 		END
 	END
+
+	ELSE--pas en combat
+	BEGIN
+		DECLARE @ItemCount int
+		DECLARE @ItemID int
+		DECLARE CurItem CURSOR FOR SELECT ItemQuantity.ItemQuantityItemID FROM ItemQuantity WHERE ItemQuantityCharactersID = @CharID
+		OPEN CurItem
+
+		FETCH NEXT FROM CurItem INTO @ItemID
+		WHILE @@FETCH_STATUS = 0
+		BEGIN 
+			DECLARE @Quantity int
+			SELECT @Quantity = ItemQuantityQuantity FROM ItemQuantity WHERE ItemQuantityItemID = @ItemID
+			SET @ItemCount = @ItemCount + @Quantity
+			FETCH NEXT FROM CurItem INTO @ItemID
+		END
+		CLOSE CurItem
+		DEALLOCATE CurItem
+
+		if(@ItemCount < ((80/100) * 255))--si il peut encore continuer a se battre(pas encore plein)
+		BEGIN
+			DECLARE @MobTable TABLE(MobID int,MobHp int)
+			Declare @MobID int
+			Declare @MobHp int
+			INSERT INTO @MobTable
+			SELECT * FROM view_RndMob	
+			SELECT @MobID = MobID FROM @MobTable
+			SELECT @MobHp = MobHp FROM @MobTable
+			INSERT INTO Combat(CombatCharactersID,CombatMonsterID,CombatMonsterHP,CombatTurn) VALUES(@CharID,@MobID,@MobHp,1)		
+		END
+		ELSE
+		BEGIN --plein donc retourne au village
+			DECLARE @QuestID int
+			DECLARE @QuestItemID int
+			SELECT @QuestID = QuestStatusQuestID FROM QuestStatus WHERE QuestStatusCharactersID = @CharID AND QuestStatusCompleted = 0
+			SELECT @QuestItemID = QuestItemID FROM Quest WHERE QuestID = @QuestID--Quest Item a rajouté dnas table Quest
+
+			if((SELECT COUNT(*) FROM ItemQuantity WHERE ItemQuantityCharactersID = @CharID AND ItemQuantityItemID = @QuestItemID) > 0) --accomplie la quête
+			BEGIN
+				UPDATE QuestStatus SET QuestStatusCompleted = 1 WHERE QuestStatusCharactersID = @CharID
+				DELETE FROM ItemQuantity WHERE ItemQuantityCharactersID = @CharID AND ItemQuantityItemID = @QuestItemID
+				SELECT @QuestID = QuestID FROM view_NonObtainedQuest
+				INSERT INTO QuestStatus(QuestStatusObtained,QuestStatusCompleted,QuestStatusQuestID,QuestStatusCharactersID) VALUES(1,0,@QuestID,@CharID)
+			END
+
+		--vidage d'inventaire
+		DECLARE CurItem CURSOR FOR SELECT ItemQuantityItemID FROM ItemQuantity WHERE ItemQuantityCharactersID = @CharID
+		OPEN CurItem
+
+		FETCH NEXT FROM CurItem INTO @ItemID
+		WHILE @@FETCH_STATUS = 0
+		BEGIN 
+			DECLARE @ItemGold int
+			DECLARE @ItemQuantity int
+			SELECT @ItemQuantity = ItemQuantityQuantity FROM ItemQuantity WHERE ItemQuantityItemID = @ItemID
+			SELECT @ItemGold = Item.ItemValue FROM Item WHERE ItemID = @ItemID
+			UPDATE Characters SET CharactersGold = @ItemGold*@ItemQuantity +  CharactersGold 
+			FETCH NEXT FROM CurItem INTO @ItemID
+		END
+		CLOSE CurItem
+		DEALLOCATE CurItem
+		END
+
+	END
+		
 END

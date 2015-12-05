@@ -8,3 +8,6 @@ C:\Users\1229753\Documents\PlebQuest\PlebQuest\PlebQuest\obj\Debug\PlebQuest.csp
 C:\Users\1229753\Documents\PlebQuest\PlebQuest\PlebQuest\obj\Debug\PlebQuest.exe
 C:\Users\1229753\Documents\PlebQuest\PlebQuest\PlebQuest\obj\Debug\PlebQuest.pdb
 C:\Users\1229753\Documents\PlebQuest\PlebQuest\PlebQuest\obj\Debug\PlebQuest.csprojResolveAssemblyReference.cache
+C:\Users\Mic\Desktop\école\PlebQuest\PlebQuest\PlebQuest\bin\Debug\PlebQuest.exe.config
+C:\Users\Mic\Desktop\école\PlebQuest\PlebQuest\PlebQuest\obj\Debug\PlebQuest.exe
+C:\Users\Mic\Desktop\école\PlebQuest\PlebQuest\PlebQuest\obj\Debug\PlebQuest.pdb
