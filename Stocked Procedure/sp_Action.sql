@@ -103,9 +103,11 @@ BEGIN
 			DECLARE @QuestID int
 			DECLARE @QuestItemID int
 			SELECT @QuestID = QuestStatusQuestID FROM QuestStatus WHERE QuestStatusCharactersID = @CharID AND QuestStatusCompleted = 0
-			SELECT @QuestItemID = QuestItemID FROM Quest WHERE QuestID = @QuestID--Quest Item a rajouté dnas table Quest
+			SELECT @QuestItemID = QuestItemID FROM Quest WHERE QuestID = @QuestID
+			--Quest Item a rajouté dnas table Quest
 
-			if((SELECT COUNT(*) FROM ItemQuantity WHERE ItemQuantityCharactersID = @CharID AND ItemQuantityItemID = @QuestItemID) > 0) --accomplie la quête
+			--accomplie la quête
+			if((SELECT COUNT(*) FROM ItemQuantity WHERE ItemQuantityCharactersID = @CharID AND ItemQuantityItemID = @QuestItemID) > 0) 
 			BEGIN
 				UPDATE QuestStatus SET QuestStatusCompleted = 1 WHERE QuestStatusCharactersID = @CharID
 				DELETE FROM ItemQuantity WHERE ItemQuantityCharactersID = @CharID AND ItemQuantityItemID = @QuestItemID
@@ -130,7 +132,29 @@ BEGIN
 		CLOSE CurItem
 		DEALLOCATE CurItem
 		END
+		--Achat d'équipement
+		DECLARE @NewEquip int
+		DECLARE @EquipType int		
 
+		SELECT @NewEquip = EquipID FROM fn__BuyEquipment(@CharID)
+
+		if(@NewEquip <> Null)
+		Begin
+			SELECT @EquipType = Equipment.EquipETypeID FROM Equipment WHERE EquipID = @NewEquip
+
+		-- a changer donne pas équipement en fonction de sa class donne n'importe quelle type d'équipement
+
+			if((SELECT Count(*) FROM CharactersEquipment INNER JOIN Equipment ON CharactersEquipmentEquipmentID = EquipID WHERE EquipETypeID = @EquipType) = 0)
+			BEGIN
+				INSERT INTO CharactersEquipment(CharactersEquipmentEquipmentID,CharactersEquipmentCharactersID) VALUES(@NewEquip,@CharID)
+			END
+			ELSE
+			BEGIN
+				DECLARE @OldEquip int
+				SELECT @OldEquip = Equipment.EquipID FROM CharactersEquipment INNER JOIN Equipment ON CharactersEquipmentEquipmentID = EquipID WHERE EquipETypeID = @EquipType
+				UPDATE CharactersEquipment SET CharactersEquipmentEquipmentID = @NewEquip WHERE CharactersEquipmentEquipmentID = @OldEquip
+			END
+		END		
 	END
 		
 END
