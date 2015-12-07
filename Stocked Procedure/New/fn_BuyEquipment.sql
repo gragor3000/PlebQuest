@@ -1,3 +1,4 @@
+--achete et retourne une nouvelle piece d'équipement
 CREATE FUNCTION fn_BuyEquipment(@CharID int)
 RETURNS @Table TABLE(EquipID int)
 AS

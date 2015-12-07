@@ -1,3 +1,4 @@
+
 --fait les actions selon les différents états du personnage
 CREATE PROCEDURE sp_Action(@CharID int)
 AS
@@ -19,6 +20,7 @@ BEGIN
 		BEGIN--Attack du monstre			
 			Set @Hp = @Hp - ((SELECT Dps FROM @TableMonster) * (SELECT CharactersLevel FROM Characters WHERE CharactersID = @CharID)) /2
 			UPDATE Characters SET CharactersCurrentHP = @Hp  WHERE CharactersID = @CharID
+			UPDATE Combat Set CombatTurn = 1
 		END
 		Else--attack du perso
 		Begin
@@ -49,23 +51,26 @@ BEGIN
 			BEGIN
 				DECLARE @EquipID int
 				DECLARE @PersoDmg int
-				DECLARE CurDmg CURSOR FOR SELECT CharactersEquipment.CharactersEquipmentEquipmentID FROM CharactersEquipment
+				Set @PersoDmg = 0
+				DECLARE CurDmgs CURSOR FOR SELECT CharactersEquipment.CharactersEquipmentEquipmentID FROM CharactersEquipment
 				WHERE CharactersEquipment.CharactersEquipmentCharactersID = @CharID
-				OPEN CurDmg
+				OPEN CurDmgs
 
-				FETCH NEXT FROM CurDmg INTO @EquipID
+				FETCH NEXT FROM CurDmgs INTO @EquipID
 				WHILE @@FETCH_STATUS = 0
 				BEGIN
 					DECLARE @EquipStat int
 					SELECT @EquipStat = Equipment.EquipStrength FROM Equipment WHERE EquipID = @EquipID
 					Set @PersoDmg = @PersoDmg + @EquipStat
-					FETCH NEXT FROM CurDmg INTO @EquipID 
+					FETCH NEXT FROM CurDmgs INTO @EquipID 
 				END
-				CLOSE CurDmg
-				DEALLOCATE CurCom
+				CLOSE CurDmgs
+				DEALLOCATE CurDmgs
 				SELECT @PersoDmg = Characters.CharactersStrength FROM Characters WHERE CharactersID = @CharID + @PersoDmg
 				SELECT @PersoDmg = Race.RaceStrength FROM Race INNER JOIN Characters ON CharactersRaceID = Race.RaceID
+				UPDATE Combat SET CombatMonsterHP = CombatMonsterHP - @PersoDmg
 			END
+			UPDATE Combat Set CombatTurn = 0
 		END
 	END
 
@@ -73,6 +78,7 @@ BEGIN
 	BEGIN
 		DECLARE @ItemCount int
 		DECLARE @ItemID int
+		SET @ItemCount = 0
 		DECLARE CurItem CURSOR FOR SELECT ItemQuantity.ItemQuantityItemID FROM ItemQuantity WHERE ItemQuantityCharactersID = @CharID
 		OPEN CurItem
 
@@ -87,7 +93,7 @@ BEGIN
 		CLOSE CurItem
 		DEALLOCATE CurItem
 
-		if(@ItemCount < ((80/100) * 255))--si il peut encore continuer a se battre(pas encore plein)
+		if(@ItemCount < ((0.80) * 255))--si il peut encore continuer a se battre(pas encore plein)
 		BEGIN
 			DECLARE @MobTable TABLE(MobID int,MobHp int)
 			Declare @MobID int
@@ -115,46 +121,47 @@ BEGIN
 				INSERT INTO QuestStatus(QuestStatusObtained,QuestStatusCompleted,QuestStatusQuestID,QuestStatusCharactersID) VALUES(1,0,@QuestID,@CharID)
 			END
 
-		--vidage d'inventaire
-		DECLARE CurItem CURSOR FOR SELECT ItemQuantityItemID FROM ItemQuantity WHERE ItemQuantityCharactersID = @CharID
-		OPEN CurItem
+			--vidage d'inventaire
+			DECLARE CurItem CURSOR FOR SELECT ItemQuantityItemID FROM ItemQuantity WHERE ItemQuantityCharactersID = @CharID
+			OPEN CurItem
 
-		FETCH NEXT FROM CurItem INTO @ItemID
-		WHILE @@FETCH_STATUS = 0
-		BEGIN 
-			DECLARE @ItemGold int
-			DECLARE @ItemQuantity int
-			SELECT @ItemQuantity = ItemQuantityQuantity FROM ItemQuantity WHERE ItemQuantityItemID = @ItemID
-			SELECT @ItemGold = Item.ItemValue FROM Item WHERE ItemID = @ItemID
-			UPDATE Characters SET CharactersGold = @ItemGold*@ItemQuantity +  CharactersGold 
 			FETCH NEXT FROM CurItem INTO @ItemID
-		END
-		CLOSE CurItem
-		DEALLOCATE CurItem
-		END
-		--Achat d'équipement
-		DECLARE @NewEquip int
-		DECLARE @EquipType int		
-
-		SELECT @NewEquip = EquipID FROM fn__BuyEquipment(@CharID)
-
-		if(@NewEquip <> Null)
-		Begin
-			SELECT @EquipType = Equipment.EquipETypeID FROM Equipment WHERE EquipID = @NewEquip
-
-		-- a changer donne pas équipement en fonction de sa class donne n'importe quelle type d'équipement
-
-			if((SELECT Count(*) FROM CharactersEquipment INNER JOIN Equipment ON CharactersEquipmentEquipmentID = EquipID WHERE EquipETypeID = @EquipType) = 0)
-			BEGIN
-				INSERT INTO CharactersEquipment(CharactersEquipmentEquipmentID,CharactersEquipmentCharactersID) VALUES(@NewEquip,@CharID)
+			WHILE @@FETCH_STATUS = 0
+			BEGIN 
+				DECLARE @ItemGold int
+				DECLARE @ItemQuantity int
+				SELECT @ItemQuantity = ItemQuantityQuantity FROM ItemQuantity WHERE ItemQuantityItemID = @ItemID
+				SELECT @ItemGold = Item.ItemValue FROM Item WHERE ItemID = @ItemID
+				UPDATE Characters SET CharactersGold = @ItemGold*@ItemQuantity +  CharactersGold 
+				FETCH NEXT FROM CurItem INTO @ItemID
 			END
-			ELSE
-			BEGIN
-				DECLARE @OldEquip int
-				SELECT @OldEquip = Equipment.EquipID FROM CharactersEquipment INNER JOIN Equipment ON CharactersEquipmentEquipmentID = EquipID WHERE EquipETypeID = @EquipType
-				UPDATE CharactersEquipment SET CharactersEquipmentEquipmentID = @NewEquip WHERE CharactersEquipmentEquipmentID = @OldEquip
-			END
-		END		
+			CLOSE CurItem
+			DEALLOCATE CurItem
+			
+			--Achat d'équipement
+			DECLARE @NewEquip int
+			DECLARE @EquipType int		
+
+			SELECT @NewEquip = EquipID FROM fn_BuyEquipment(@CharID)
+
+			if(@NewEquip <> Null)
+			Begin
+				SELECT @EquipType = Equipment.EquipTypeID FROM Equipment WHERE EquipID = @NewEquip
+
+			-- a changer donne pas équipement en fonction de sa class donne n'importe quelle type d'équipement
+
+				if((SELECT Count(*) FROM CharactersEquipment INNER JOIN Equipment ON CharactersEquipmentEquipmentID = EquipID WHERE EquipTypeID = @EquipType) = 0)
+				BEGIN
+					INSERT INTO CharactersEquipment(CharactersEquipmentEquipmentID,CharactersEquipmentCharactersID) VALUES(@NewEquip,@CharID)
+				END
+				ELSE
+				BEGIN
+					DECLARE @OldEquip int
+					SELECT @OldEquip = Equipment.EquipID FROM CharactersEquipment INNER JOIN Equipment ON CharactersEquipmentEquipmentID = EquipID WHERE EquipTypeID = @EquipType
+					UPDATE CharactersEquipment SET CharactersEquipmentEquipmentID = @NewEquip WHERE CharactersEquipmentEquipmentID = @OldEquip
+				END
+			END	
+		END
 	END
 		
 END

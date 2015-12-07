@@ -9,7 +9,7 @@ BEGIN
 	from Quest
 	where QuestID not in (select QuestStatusQuestID 
                     from QuestStatus WHERE  QuestStatusCharactersID = @CharID) 
-	INSERT INTO @Table(QuestID) VALUEs(@Result)
+	INSERT INTO @Table(QuestID) VALUES(@Result)
 
 	RETURN 
 END

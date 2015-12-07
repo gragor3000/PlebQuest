@@ -35,7 +35,7 @@ BEGIN
 		END
 		CLOSE CurDrop
 		DEALLOCATE CurDrop
-		UPDATE Characters SET CharactersCurrentExp = @MonsterExp * @CharLvl + CharactersCurrentExp, CharactersGold = @MonsterGold * @CharLvl + CharactersGold
+		UPDATE Characters SET CharactersCurrentExp = @MonsterExp * @CharLvl + CharactersCurrentExp, CharactersGold = @MonsterGold * @CharLvl + CharactersGold, CharactersCurrentHP = CharactersMaxHP
 		DELETE FROM Combat WHERE CombatCharactersID = @CharID		
 	END
 END
