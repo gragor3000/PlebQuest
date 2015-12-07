@@ -296,7 +296,7 @@ public class CExecuteur
             }
             catch (Exception ex)
             {
-                MessageBox.Show("error ExecPsParams: " + ex.Message);
+                //MessageBox.Show("error ExecPsParams: " + ex.Message);
                 result = false;
             }
             finally
@@ -375,7 +375,6 @@ public class CExecuteur
         {
             conSql.Close();
         }
-
         return nameParams;
     }
 

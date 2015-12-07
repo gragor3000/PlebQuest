@@ -54,6 +54,8 @@ namespace PlebQuest
             if(pgbAction.Value == pgbAction.Maximum)
             {
                 pgbAction.Value = 0;
+                DataTable tabTemp = new DataTable();
+                exe.ExecPsParams("sp_Action", tabTemp, idPerso);
 
                 DisplaySheet();
                 FillEquip();
