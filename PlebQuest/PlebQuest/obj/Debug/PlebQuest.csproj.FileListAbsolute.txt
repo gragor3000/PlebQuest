@@ -14,3 +14,10 @@ C:\Users\Mic\Desktop\école\PlebQuest\PlebQuest\PlebQuest\obj\Debug\PlebQuest.pd
 C:\PlebQuest\PlebQuest\PlebQuest\bin\Debug\PlebQuest.exe.config
 C:\PlebQuest\PlebQuest\PlebQuest\obj\Debug\PlebQuest.exe
 C:\PlebQuest\PlebQuest\PlebQuest\obj\Debug\PlebQuest.pdb
+C:\PlebQuest\PlebQuest\PlebQuest\bin\Debug\PlebQuest.exe
+C:\PlebQuest\PlebQuest\PlebQuest\bin\Debug\PlebQuest.pdb
+C:\PlebQuest\PlebQuest\PlebQuest\obj\Debug\PlebQuest.csprojResolveAssemblyReference.cache
+C:\PlebQuest\PlebQuest\PlebQuest\obj\Debug\PlebQuest.Form1.resources
+C:\PlebQuest\PlebQuest\PlebQuest\obj\Debug\PlebQuest.MainMenu.resources
+C:\PlebQuest\PlebQuest\PlebQuest\obj\Debug\PlebQuest.Properties.Resources.resources
+C:\PlebQuest\PlebQuest\PlebQuest\obj\Debug\PlebQuest.csproj.GenerateResource.Cache

@@ -5,3 +5,6 @@ BEGIN
 	Select * FROM Characters
 	WHERE Characters.CharactersID = @CharacterID
 END
+
+
+

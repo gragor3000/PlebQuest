@@ -5,3 +5,6 @@ BEGIN
 	Select * FROM Equipment 
 	WHERE Equipment.EquipID = @EquipID
 END
+
+
+

@@ -17,3 +17,6 @@ BEGIN
 	INSERT INTO @_Table(MobDps,MobExp,MobGold) VALUES(@Dps,@Exp,@Gold)
 RETURN	
 END
+
+
+

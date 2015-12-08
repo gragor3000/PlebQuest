@@ -18,3 +18,6 @@ BEGIN
 	UPDATE Characters SET CharactersGold = CharactersGold + @QuestGold, CharactersCurrentExp = CharactersCurrentExp + @QuestExp WHERE CharactersID = @CharID
 
 END
+
+
+

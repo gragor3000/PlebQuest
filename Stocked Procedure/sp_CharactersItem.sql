@@ -6,3 +6,6 @@ BEGIN
 	FROM (Item INNER JOIN ItemQuantity ON ItemID = ItemQuantityItemID) INNER JOIN Characters ON CharactersID = ItemQuantityCharactersID
 	WHERE ItemQuantityCharactersID = @CharactersID AND ItemID in(Select ItemQuantityItemID from ItemQuantity)
 END
+
+
+

@@ -6,3 +6,4 @@ Begin
 	FROM (Spell INNER JOIN SpellQuantity ON SpellID = SpellQuantitySpellID) INNER JOIN Characters ON CharactersID = SpellQuantityCharactersID
 	WHERE SpellQuantityCharactersID = @CharID
 End
+

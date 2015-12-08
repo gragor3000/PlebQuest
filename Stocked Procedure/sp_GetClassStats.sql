@@ -5,3 +5,6 @@ BEGIN
 	SELECT * From Class
 	WHERE Class.ClassID = @ClassID
 END
+
+
+

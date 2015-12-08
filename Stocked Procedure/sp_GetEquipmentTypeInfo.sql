@@ -5,3 +5,6 @@ BEGIN
 	SELECT EType.ETypeName FROM EType INNER JOIN Equipment ON EquipTypeID = ETypeID 
 	WHERE EquipTypeID = @TypeID
 END
+
+
+

@@ -5,3 +5,6 @@ Begin
 	SELECT * FROM CharactersEquipment
 	WHERE CharactersEquipmentCharactersID = @_characterID
 End
+
+
+

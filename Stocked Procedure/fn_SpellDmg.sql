@@ -1,6 +1,5 @@
-
 --donne le spell qui fait le plus de dégat du personnage donnée
-CREATE FUNCTION fn_SpellDmg (@CharID int)
+CREATE FUNCTION fn_SpellDmg(@CharID int)
 RETURNS @Table TABLE(SpellID int, SpellDmg int)
 AS
 BEGIN
@@ -12,13 +11,13 @@ BEGIN
 		@ID = Spell.SpellID	
 
 	FROM (Spell INNER JOIN SpellQuantity ON SpellID = SpellQuantitySpellID) INNER JOIN Characters ON CharactersID = SpellQuantityCharactersID
-	WHERE SpellQuantityCharactersID = @CharID  AND Spell.SpellHeal > 0
+	WHERE SpellQuantityCharactersID = @CharID  AND Spell.SpellDmg > 0
 	ORDER BY SpellDmg DESC
 	
 	INSERT INTO @Table(SpellID,SpellDmg) VALUES(@ID,@Dmg)
 
 	RETURN
 END
-GO
+
 
 

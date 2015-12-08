@@ -1,4 +1,3 @@
-
 --donne le meilleur spell de soin du personnage donnée
 CREATE FUNCTION fn_HealSpell (@CharID int)
 RETURNS @Table TABLE(SpellID int, SpellHeal int)
@@ -20,6 +19,6 @@ BEGIN
 	RETURN
 END
 
-GO
+
 
 

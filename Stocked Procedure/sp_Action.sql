@@ -19,8 +19,12 @@ BEGIN
 		if(@Turn = 0)
 		BEGIN--Attack du monstre			
 			Set @Hp = @Hp - ((SELECT Dps FROM @TableMonster) * (SELECT CharactersLevel FROM Characters WHERE CharactersID = @CharID)) /2
+			if(@Hp < 0)
+			BEGIN
+				SET @Hp = 0
+			END
 			UPDATE Characters SET CharactersCurrentHP = @Hp  WHERE CharactersID = @CharID
-			UPDATE Combat Set CombatTurn = 1
+			UPDATE Combat Set CombatTurn = 1 Where CombatCharactersID = @CharID
 		END
 		Else--attack du perso
 		Begin
@@ -29,13 +33,13 @@ BEGIN
 			DECLARE @MaxHp int
 			SELECT @MaxHp = Characters.CharactersMaxHP FROM Characters WHERE CharactersID = @CharID
 
-			if(@Hp <= ((10/100) * @MaxHp))--spell de soin
+			if(@Hp <= ((0.50) * @MaxHp))--spell de soin
 			BEGIN
 				DECLARE @HealSpell TABLE(SpellID int,SpellHeal int)
 				INSERT INTO @HealSpell 
 				SELECT * FROM fn_HealSpell(@CharID)
 				UPDATE Characters SET CharactersCurrentHP = CharactersCurrentHP + (Select SpellHeal FROM @HealSpell) WHERE CharactersID = @CharID
-				UPDATE SpellQuantity SET SpellQuantityQuantity = SpellQuantityQuantity - 1 WHERE SpellQuantityCharactersID = @CharID
+				UPDATE SpellQuantity SET SpellQuantityQuantity = SpellQuantityQuantity - 1 WHERE SpellQuantityCharactersID = @CharID AND SpellQuantitySpellID = (Select SpellID FROM @HealSpell)
 			END
 
 			Else if(@Random <= 30)--spell d'Attack
@@ -43,8 +47,16 @@ BEGIN
 				DECLARE @DmgSpell TABLE(SpellID int,SpellDmg int)
 				INSERT INTO @DmgSpell
 				SELECT * FROM fn_SpellDmg(@CharID)
-				UPDATE Combat SET CombatMonsterHP = CombatMonsterHP - (SELECT SpellDmg FROM @DmgSpell) WHERE CombatCharactersID = @CharID
-				UPDATE SpellQuantity SET SpellQuantityQuantity = SpellQuantityQuantity - 1 WHERE SpellQuantityCharactersID = @CharID
+
+				if((((SELECT CombatMonsterHP from Combat WHERE CombatCharactersID = @CharID) - (SELECT SpellDmg FROM @DmgSpell)) <= 1) AND ((SELECT SpellDmg FROM @DmgSpell) is not null))
+				BEGIN
+					UPDATE Combat SET CombatMonsterHP = 1 WHERE CombatCharactersID = @CharID 
+				END
+				ELSE
+				Begin
+					UPDATE Combat SET CombatMonsterHP = CombatMonsterHP - (SELECT SpellDmg FROM @DmgSpell) WHERE CombatCharactersID = @CharID
+				END
+				UPDATE SpellQuantity SET SpellQuantityQuantity = SpellQuantityQuantity - 1 WHERE SpellQuantityCharactersID = @CharID AND SpellQuantitySpellID = (Select SpellID FROM @DmgSpell)
 			END
 
 			ELSE--attack normal
@@ -66,11 +78,23 @@ BEGIN
 				END
 				CLOSE CurDmgs
 				DEALLOCATE CurDmgs
-				SELECT @PersoDmg = Characters.CharactersStrength FROM Characters WHERE CharactersID = @CharID + @PersoDmg
-				SELECT @PersoDmg = Race.RaceStrength FROM Race INNER JOIN Characters ON CharactersRaceID = Race.RaceID
-				UPDATE Combat SET CombatMonsterHP = CombatMonsterHP - @PersoDmg
+				DECLARE @RaceStr int
+				DECLARE @CharStr int
+				SELECT @CharStr = Characters.CharactersStrength FROM Characters WHERE CharactersID = @CharID
+				Set @PersoDmg = @CharStr + @PersoDmg
+				SELECT @RaceStr = Race.RaceStrength FROM Race INNER JOIN Characters ON CharactersRaceID = Race.RaceID WHERE CharactersID = @CharID 
+				SET @PersoDmg = @RaceStr + @PersoDmg
+
+				if(((SELECT CombatMonsterHP from Combat WHERE CombatCharactersID = @CharID) - @PersoDmg) <= 1 )
+				BEGIN
+					UPDATE Combat SET CombatMonsterHP = 1 WHERE CombatCharactersID = @CharID
+				END
+				ELSE
+				BEGIN
+					UPDATE Combat SET CombatMonsterHP = (CombatMonsterHP - @PersoDmg) WHERE CombatCharactersID = @CharID
+				END
 			END
-			UPDATE Combat Set CombatTurn = 0
+			UPDATE Combat Set CombatTurn = 0 WHERE CombatCharactersID = @CharID
 		END
 	END
 
@@ -95,9 +119,9 @@ BEGIN
 
 		if(@ItemCount < ((0.80) * 255))--si il peut encore continuer a se battre(pas encore plein)
 		BEGIN
-			DECLARE @MobTable TABLE(MobID int,MobHp int)
 			Declare @MobID int
 			Declare @MobHp int
+			DECLARE @MobTable TABLE(MobID int,MobHp int)			
 			INSERT INTO @MobTable
 			SELECT * FROM view_RndMob	
 			SELECT @MobID = MobID FROM @MobTable
@@ -110,14 +134,15 @@ BEGIN
 			DECLARE @QuestItemID int
 			SELECT @QuestID = QuestStatusQuestID FROM QuestStatus WHERE QuestStatusCharactersID = @CharID AND QuestStatusCompleted = 0
 			SELECT @QuestItemID = QuestItemID FROM Quest WHERE QuestID = @QuestID
-			--Quest Item a rajouté dnas table Quest
+			
+			--Quest Item a rajouté dans table Quest
 
 			--accomplie la quête
 			if((SELECT COUNT(*) FROM ItemQuantity WHERE ItemQuantityCharactersID = @CharID AND ItemQuantityItemID = @QuestItemID) > 0) 
 			BEGIN
 				UPDATE QuestStatus SET QuestStatusCompleted = 1 WHERE QuestStatusCharactersID = @CharID
 				DELETE FROM ItemQuantity WHERE ItemQuantityCharactersID = @CharID AND ItemQuantityItemID = @QuestItemID
-				SELECT @QuestID = QuestID FROM view_NonObtainedQuest
+				SELECT @QuestID = QuestID FROM fn_NonObtainedQuest(76)
 				INSERT INTO QuestStatus(QuestStatusObtained,QuestStatusCompleted,QuestStatusQuestID,QuestStatusCharactersID) VALUES(1,0,@QuestID,@CharID)
 			END
 
@@ -133,6 +158,7 @@ BEGIN
 				SELECT @ItemQuantity = ItemQuantityQuantity FROM ItemQuantity WHERE ItemQuantityItemID = @ItemID
 				SELECT @ItemGold = Item.ItemValue FROM Item WHERE ItemID = @ItemID
 				UPDATE Characters SET CharactersGold = @ItemGold*@ItemQuantity +  CharactersGold 
+				DELETE FROM ItemQuantity WHERE ItemQuantityItemID = @ItemID AND ItemQuantityCharactersID = @CharID
 				FETCH NEXT FROM CurItem INTO @ItemID
 			END
 			CLOSE CurItem
@@ -162,6 +188,8 @@ BEGIN
 				END
 			END	
 		END
-	END
-		
+	END		
 END
+
+
+

@@ -224,28 +224,28 @@ namespace PlebQuest
             for (int i = 0; i < equipIdDt.Rows.Count; i++)
             {
                 exe.ExecPsParams("sp_GetEquipmentInfo", equipDt, (Int32)equipIdDt.Rows[i][0]);
-                string[] data = equipDt.Rows[0][1].ToString().Split(' ');
+                string[] data = equipDt.Rows[i]["Name"].ToString().Split(' ');
 
                 switch(data[1])
                 {
                     case "helmet":
                     case "hat":
                     case "bandana":
-                        result[0] = equipDt.Rows[0]["Name"].ToString();
+                        result[0] = equipDt.Rows[i]["Name"].ToString();
                         break;
                     case "chest":
                     case "robe":
                     case "chestplate":
-                        result[1] = equipDt.Rows[0]["Name"].ToString();
+                        result[1] = equipDt.Rows[i]["Name"].ToString();
                         break;
                     case "pants":
-                        result[2] = equipDt.Rows[0]["Name"].ToString();
+                        result[2] = equipDt.Rows[i]["Name"].ToString();
                         break;
                     case "boots":
-                        result[3] = equipDt.Rows[0]["Name"].ToString();
+                        result[3] = equipDt.Rows[i]["Name"].ToString();
                         break;
                     default:
-                        result[4] = equipDt.Rows[0]["Name"].ToString();
+                        result[4] = equipDt.Rows[i]["Name"].ToString();
                         break;
                 }
             }
