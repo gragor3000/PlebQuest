@@ -6,20 +6,20 @@ FOR UPDATE
 AS
 BEGIN
 	DECLARE 
-		@MonsterID int,
-		@MonsterExp int,
-		@MonsterGold int,
-		@MonsterDrop int,
-		@CharID int,
-		@CharLvl int,
-		@MonsterHp int;
+		@MonsterID int,--id du Monstre en combat
+		@MonsterExp int,--exp donnée par le Monstre en combat
+		@MonsterGold int,--or donnée par le Monstre en combat
+		@MonsterDrop int,--item que le Monstre drop
+		@CharID int,--id du perso en combat
+		@CharLvl int,--niveau du perso en combat
+		@MonsterHp int;--vie du Monstre en combat
 
 	SELECT @MonsterID = CombatMonsterID FROM inserted
 	SELECT @MonsterHp = CombatMonsterHP FROM inserted
 	SELECT @CharID = CombatCharactersID FROM inserted
 	SELECT @CharLvl = Characters.CharactersLevel FROM Characters WHERE CharactersID = @CharID
 
-	if(@MonsterHp <= 1 OR @MonsterHp is NUll)
+	if(@MonsterHp <= 1 OR @MonsterHp is NUll)--si le monstre est mort
 	BEGIN
 		SELECT @MonsterExp = Mob.MobExpReward FROM Mob WHERE MobID = @MonsterID
 		SELECT @MonsterGold = Mob.MobGoldReward FROM Mob WHERE MobID = @MonsterID		
@@ -40,6 +40,5 @@ BEGIN
 		DELETE FROM Combat WHERE CombatCharactersID = @CharID		
 	END
 END
-GO
 
 

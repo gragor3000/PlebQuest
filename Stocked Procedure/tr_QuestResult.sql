@@ -5,10 +5,10 @@ FOR UPDATE
 AS
 BEGIN
 	DECLARE 
-		@QuestID int,
-		@QuestGold int,
-		@QuestExp int,
-		@CharID int;
+		@QuestID int,--ID de la quest
+		@QuestGold int,--or donnée par la quête
+		@QuestExp int,--Exp donnée par la quête
+		@CharID int;--id du perso
 
 	SELECT @QuestID = QuestStatusQuestID FROM inserted 
 	SELECT @CharID = QuestStatusCharactersID FROM inserted

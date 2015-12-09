@@ -1,4 +1,4 @@
---donne le nom de L'équipement donnée
+--donne le nom du type de L'équipement donnée
 CREATE PROCEDURE sp_GetEquipmentTypeInfo(@TypeID int)
 AS
 BEGIN

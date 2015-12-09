@@ -1,17 +1,17 @@
---fait mourir le personnage si sa vie est a 0 et le fait lvl up
+--fait mourir le personnage si sa vie est a 0 et le fait lvl up si il a l'exp nécessaire
 CREATE TRIGGER tr_Characters
 ON Characters
 FOR UPDATE
 AS
 BEGIN
 	DECLARE 
-		@CharID int,
-		@CharHp int,
-		@CharExp int,
-		@RaceCon int,
-		@CharCon int,
-		@Charlvl int,
-		@CharMaxExp int;
+		@CharID int,--id du perso
+		@CharHp int,--vie courante du perso
+		@CharExp int,--exp du perso
+		@RaceCon int,--constitution de la race du perso
+		@CharCon int,--constitution du perso
+		@Charlvl int,--lvl du perso
+		@CharMaxExp int;--exp nécessaire au lvl up
 
 	SELECT @CharID = CharactersID FROM inserted
 	SELECT @CharHp = CharactersCurrentHP FROM inserted
@@ -20,6 +20,7 @@ BEGIN
 	SELECT @Charlvl = CharactersLevel FROM inserted
 	SELECT @CharCon = CharactersConstitution FROM inserted
 	SELECT @RaceCon = Race.RaceConstitution FROM Race INNER JOIN Characters ON CharactersRaceID = RaceID WHERE CharactersID = @CharID
+	
 	
 	if(@CharHp <= 0)--quand le joueur meurt il perd ses items et son combat
 	BEGIN
