@@ -4,9 +4,9 @@ RETURNS @_Table TABLE(MobDps int,MobExp int,MobGold int)
 AS
 BEGIN
 	DECLARE 
-		@Dps int,
-		@Exp int,
-		@Gold int;
+		@Dps int,--dégat du monstre
+		@Exp int,--exp donnée par le monstre
+		@Gold int;--gold donnée par le monstre
 	SELECT
 		@Dps = Mob.MobDPS,
 		@Exp = Mob.MobExpReward,

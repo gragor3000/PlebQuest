@@ -1,3 +1,4 @@
+--combat courant des personnages contient quelle personnage se bat contre quel monstre ainsi que sa vie
 CREATE Table Combat
 (
 	CombatID int IDENTITY(0,1),

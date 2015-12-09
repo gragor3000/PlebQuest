@@ -4,7 +4,7 @@ CREATE FUNCTION fn_NonObtainedQuest(@CharID int)
 RETURNS @Table TABLE(QuestID int)
 AS
 BEGIN
-	DECLARE @Result int
+	DECLARE @Result int--id de la quête au hasard
 	SELECT TOP 10 percent @Result = QuestID
 	from Quest
 	where QuestID not in (select QuestStatusQuestID 
