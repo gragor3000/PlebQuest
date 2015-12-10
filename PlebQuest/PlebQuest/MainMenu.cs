@@ -54,7 +54,7 @@ namespace PlebQuest
             {
                 string[] data = lstChar.Items[lstChar.SelectedIndex].ToString().Split(' ');
 
-                Form1 GUI = new Form1(int.Parse(data[0]));
+                Form1 GUI = new Form1(int.Parse(data[0]), this);
                 this.Hide();
                 GUI.Show();
             }
@@ -70,7 +70,7 @@ namespace PlebQuest
             {
                 string[] data = lstChar.Items[lstChar.SelectedIndex].ToString().Split(' ');
 
-                Form1 GUI = new Form1(int.Parse(data[0]));
+                Form1 GUI = new Form1(int.Parse(data[0]), this);
                 this.Hide();
                 GUI.Show();
             }

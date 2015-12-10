@@ -366,6 +366,7 @@
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
             this.Text = "PlebQuest";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.Leave += new System.EventHandler(this.Form1_Leave);
             this.menuStrip1.ResumeLayout(false);

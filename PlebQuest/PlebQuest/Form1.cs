@@ -17,14 +17,16 @@ namespace PlebQuest
         DataTable raceDt;   //table de race (ne change jms)
         CExecuteur exe;     //executeur qui communique avec la BD
         Timer timer;        //le timer qui compte les ticks pour les actions
+        MainMenu mainMenu;  //pointeur vers la menu principale
 
-        public Form1(int idPerso)
+        public Form1(int idPerso, MainMenu _mainmenu)
         {
             this.idPerso = idPerso;
             InitializeComponent();
             exe = new CExecuteur();
             timer = new Timer();
             timer.Interval = 50;
+            mainMenu = _mainmenu;
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -357,6 +359,11 @@ namespace PlebQuest
         {
             timer.Interval = 10;
             timer.Start();
+        }
+
+        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            mainMenu.Close();
         }
     }
 }
